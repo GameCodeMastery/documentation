@@ -6,6 +6,8 @@ image below here (custom image plugin added)
 
 ![[Aim Camera Mode Example.png]]
 
+
+
 ## System Architecture
 
 The Advanced Targeting System is built entirely in Blueprints, leveraging a component-based architecture to ensure modularity and ease of integration. The system centers around a core targeting component and an interface for defining targetable actors, with additional widget assets for visual feedback. Key components and their interactions are as follows:
@@ -25,6 +27,9 @@ The Advanced Targeting System is built entirely in Blueprints, leveraging a comp
 [Targetable Actor] --> [BP_TargetingInterface] --> [WBP_LockOn Widget]
 ```
 
+![Engelbart](https://i.ytimg.com/vi/EFXMW_UEDco/maxresdefault.jpg)
+
+testing123
 ---
 
 ## Core Features

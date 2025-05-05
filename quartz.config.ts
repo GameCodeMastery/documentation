@@ -1,9 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
-// Import the custom image plugin
-import { ImageModalPlugin } from "./quartz/plugins/imageModalPlugin"
-
 /**
  * Quartz 4 Configuration
  *
@@ -93,8 +90,6 @@ const config: QuartzConfig = {
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time
       Plugin.CustomOgImages(),
-      // Add the image modal plugin
-      ImageModalPlugin(),
     ],
   },
 }

@@ -49,5 +49,5 @@ export {
   Breadcrumbs,
   Comments,
   Flex,
-  ConditionalRender,
+  ConditionalRender
 }
