@@ -6,7 +6,12 @@ image below here
 
 ![[Aim Camera Mode Example.png]]
 
----
+
+Second Image (link)
+https://images.squarespace-cdn.com/content/v1/5c8fe0652727be76a540eff5/31e9ac04-8732-48db-893b-a44318ca9f3c/FasterSlowFunction.PNG
+
+
+[https://images.squarespace-cdn.com/content/v1/5c8fe0652727be76a540eff5/31e9ac04-8732-48db-893b-a44318ca9f3c/FasterSlowFunction.PNG]()
 
 ## System Architecture
 
@@ -20,7 +25,7 @@ The Advanced Targeting System is built entirely in Blueprints, leveraging a comp
 
 **Text Diagram**:
 
-```
+```cpp
 [Player Pawn] --> [BP_TargetingComponent]
                             |
                             v
@@ -39,7 +44,6 @@ The Advanced Targeting System is built entirely in Blueprints, leveraging a comp
 - **Targeting Widget Integration**: Includes a default lock-on widget (`WBP_LockOn`) to visually indicate the selected target, with support for custom widgets.
 
 ---
-
 ## Setup
 
 Follow these steps to integrate the Advanced Targeting System into a new Unreal Engine 5 project. These steps are necessary for custom setups, as the system is pre-configured in the default project included with Advanced ARPG Combat.
