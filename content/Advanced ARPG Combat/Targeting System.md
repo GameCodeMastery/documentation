@@ -6,13 +6,6 @@ image below here
 
 ![[Aim Camera Mode Example.png]]
 
-
-Second Image (link)
-https://images.squarespace-cdn.com/content/v1/5c8fe0652727be76a540eff5/31e9ac04-8732-48db-893b-a44318ca9f3c/FasterSlowFunction.PNG
-
-
-[https://images.squarespace-cdn.com/content/v1/5c8fe0652727be76a540eff5/31e9ac04-8732-48db-893b-a44318ca9f3c/FasterSlowFunction.PNG]()
-
 ## System Architecture
 
 The Advanced Targeting System is built entirely in Blueprints, leveraging a component-based architecture to ensure modularity and ease of integration. The system centers around a core targeting component and an interface for defining targetable actors, with additional widget assets for visual feedback. Key components and their interactions are as follows:
