@@ -1,6 +1,5 @@
 ---
-title: Welcome to Quartz
+title: Welcome to the Advanced ARPG Combat Wiki
 ---
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+This is documentation for Advanced ARPG Combat V3.

@@ -4,7 +4,7 @@ The Advanced Targeting System is a robust lock-on targeting solution designed fo
 
 image below here
 
-![[Screenshot 2025-05-04 182410.png]]
+![[Aim Camera Mode Example.png]]
 
 ---
 
