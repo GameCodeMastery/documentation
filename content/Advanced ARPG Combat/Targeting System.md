@@ -27,9 +27,6 @@ The Advanced Targeting System is built entirely in Blueprints, leveraging a comp
 [Targetable Actor] --> [BP_TargetingInterface] --> [WBP_LockOn Widget]
 ```
 
-![Engelbart](https://i.ytimg.com/vi/EFXMW_UEDco/maxresdefault.jpg)
-
-testing123
 ---
 
 ## Core Features
