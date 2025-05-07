@@ -8,8 +8,6 @@ You might be wondering why this is going to be the new home for Documentation fo
 # Switching Unreal Documentation to Quartz and Markdown
 I’m transitioning my Unreal Engine documentation from Wikiful to Quartz, a static-site generator, paired with a Markdown editor. This change streamlines workflows, enhances navigation, and supports scalable, high-quality documentation that evolves with my projects. 
 
-Below, I explain in a bit more detail why I’m making this change and how it enhances my documentation:
-
 ## Why Move from Wikiful?
  I enjoyed using Wikiful as it is simple and user-friendly, but it is missing some key features I need:
 
@@ -35,7 +33,7 @@ Primarily because I frequently use Markdown and have grown to really appreciate 
 * and more. This code block is set for C++ syntax highlighting which will be very useful for Unreal Engine related documentation
 */
 
-#include <iostream>;
+#include <iostream>
 
 using namespace std;
 
