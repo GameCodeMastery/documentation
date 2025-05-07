@@ -21,16 +21,17 @@ As a result I felt a more robust solution would help me create better documentat
 ## Why Quartz and Markdown?
 Primarily because I frequently use Markdown and have grown to really appreciate the versatility, portability, and simplicity of it. So I wanted a markdown based solution that has what I need:
 
-1. **Markdown based Solution**: Markdown is a simple and easy-to-use markup language you can use to format virtually any document.
-	- Words as `Code` 
-	- Code blocks with syntax highlighting:
+1. **Markdown based Solution**: Markdown is a simple and easy-to-use markup language you can use to format virtually any document:
+
+	- **Code blocks with syntax highlighting**:
 ```cpp
 /*
 * Making a word code is as simple as `` and adding a code block is as simple as ```
 * Supports headings: # for heading 1, ## for heading 2, ### for heading 3, etc
 * divide pages with ---
 * 1, 2, 3, etc for numbered lists and - for unnumbered lists
-* and more. This code block is set for C++ syntax highlighting which will be very useful for Unreal Engine related documentation
+* and more. This code block is set for C++ syntax highlighting which will 
+* be very useful for Unreal Engine related documentation
 */
 
 #include <iostream>
@@ -51,7 +52,7 @@ return 0;
 >  You can find out more about markdown HERE if you're curious: https://www.markdownguide.org/
 
 2. **Version Control**: With this new solution I can utilize git version control to more finely tune the different versions of the documentation so that I can apply and revert changes as needed.
-3. **Dark Mode:** Funnily enough having a dark mode is a huge deal for me as everything I use dark mode for everything and when working at night I don't like being blinded by a bright white screen. So having dark mode makes writing or reading documentation at night less straining.
+3. **Dark Mode:** Funny enough having a dark mode is a huge deal for me as I use dark mode for everything and when working at night I don't like being blinded by a bright white screen. So having dark mode makes writing or reading the documentation at night less straining.
 4. **Portability:** I can write the documentation in my note taking app of choice, Obsidian, and use those same markdown files to publish in my official documentation.
 5. **Nicer Layout**: In addition to dark mode, I also prefer the nicer layout along with features like an automatic Table of Contents that is on the right side of every document. 
 6. **Obsidian Integration**: I use Obsidian as my primary note taking application, Quartz allows me to easily integrate with Obsidian.
