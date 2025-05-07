@@ -1,5 +1,7 @@
 This guide explains how to use the Advanced Interaction System once it is set up. It is divided into sections for key operational and customization tasks, ensuring developers can quickly understand how to interact with and extend the system.
 
+![[Interaction System Bonfire 1.png]]
+
 ### Initiating an Interaction
 
 1. Ensure the `IA_Interact` Input Action is bound to a key (e.g., “E”) in the **Input Mapping Context**.
@@ -15,18 +17,31 @@ This guide explains how to use the Advanced Interaction System once it is set up
 
 1. Create a new actor Blueprint or open an existing one (e.g., a loot chest, NPC, or bonfire).
 2. In the Class Defaults, add the `BP_InteractionInterface` to the Interfaces list.
+
+![[Interaction Interface.png]]
+
 3. Add a Widget Component to the actor:
     - Set the Widget Class to `WB_InteractableWidget` (or a custom widget if desired).
     - Set the default visibility to **Hidden**.
-4. Add a boolean variable (e.g., `bIsInteracting`) to track the interaction state.
-5. Implement the following interface functions:
+
+![[InteractableWidget.png]]
+
+4. Initialize Interactable Widget on **Begin Play**
+
+![[InitailizeInteractionWidget.png]]
+
+5. Add a boolean variable (e.g., `bIsInteracting`) to track the interaction state.
+6. Implement the following interface functions:
     - **ToggleInteractableMessage**: Set the Widget Component’s visibility based on the input parameter (e.g., Visible if true, Hidden if false).
     - **Interact**: Store the caller (interactor) reference, set `bIsInteracting` to true, and call a custom `OnInteractionBegin` function to handle initiator-driven logic, such as playing an interaction animation or activating an ability on the caller.
     - **EndInteraction**: Set `bIsInteracting` to false and call a custom `OnInteractionEnd` function to clean up (e.g., stop the animation or deactivate the ability).
     - **StartInteractableAction**: Implement context-sensitive actions on the interactable actor, such as triggering a "Rest at bonfire" effect and respawning enemies when called by another system (e.g., a "Rest" button in a bonfire menu).
     - **GetInteractableMessage**: Return a string for the interaction prompt (e.g., "Press [E] to Open Loot Chest" or "Press [E] to Rest at Bonfire").
-6. Ensure the actor’s collision settings include the `Interactable` object type (e.g., set a component’s collision to respond to the `Interactable` channel).
-7. Place the custom actor in the level and test interactions.
+
+![[Example Interaction Implementation.png]]
+
+7. Ensure the actor’s collision settings include the `Interactable` object type (e.g., set a component’s collision to respond to the `Interactable` channel).
+8. Place the custom actor in the level and test interactions.
 
 ### Creating Custom Interaction Widgets
 
@@ -38,10 +53,10 @@ This guide explains how to use the Advanced Interaction System once it is set up
 ### Add Custom Interaction Animation
 
 1. Create custom animation for your interactable (or create an ability to activate this animation through)
-    
 2. In your custom interactable on the overridden event: “Interact” add functionality here to get the Caller (Caller is an input for this function) and from the caller get a reference to the necessary system to activate an ability or play an animation.
-    
 3. Use EndInteraction event to stop the ability, animation, or play an end interaction animation in a similar fashion as interacting. You likely will need to store a reference to the caller as a variable as EndInteraction doesn’t have a Caller input.
+
+![[Activate Interaction Ability.png]]
 
 ### Implementing Context-Sensitive Actions
 
@@ -51,6 +66,8 @@ This guide explains how to use the Advanced Interaction System once it is set up
     - For a loot chest, trigger the transfer of items to the player’s inventory when a “loot” button is pressed in a loot menu.
 3. Ensure the calling system (e.g., a menu widget) retrieves the interactable actor reference (stored during `Interact`) and calls `StartInteractableAction` when the action is triggered.
 
+![[Interaction Action.png]]
+
 ### Customizing Interaction Properties
 
 1. Open the interactor’s Blueprint and select `BP_InteractionComponent`.
@@ -59,6 +76,8 @@ This guide explains how to use the Advanced Interaction System once it is set up
     - `InteractableObjectTypes`: Add additional object types to expand the range of interactable actors.
     - `VisualizeInteractionTrace`: Enable during development to debug the capsule trace.
 3. Save and test the changes in-game.
+
+![[Interaction System Component Details 1.png]]
 
 **Notes**:
 

@@ -1,5 +1,7 @@
 The Advanced Interaction System is a versatile and generic interaction framework designed for Unreal Engine 5 projects, integrated within the Advanced ARPG Combat system. Its primary purpose is to facilitate interactions between actors, enabling an interactor (e.g., a player character) to search for and interact with interactable actors (e.g., loot chests, NPCs, or environmental objects). The system addresses the need for a flexible, reusable mechanism to handle interaction events, such as triggering animations, opening menus, or activating abilities. It is targeted at game developers working on action RPGs, adventure games, or any genre requiring robust actor-to-actor interactions. Unique features include a modular interface-based design, customizable interaction tracing, and support for context-sensitive interaction actions.
 
+![[Interaction System Bonfire.png]]
+
 ---
 
 ## System Architecture

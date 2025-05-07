@@ -26,6 +26,11 @@ This guide explains how to use the Advanced Targeting System once it is set up. 
 
 ![[Targeting Widget.png]]
 
+
+> [!NOTE] Note
+> You can also adjust the position of the targeting dot by clicking on the widget component and moving it in the Character View Port.
+
+
 4. Implement the following interface functions:
     - **On Target Selected**: Use the provided `bTargeted` bool to set the Widget Component’s visibility (e.g., Visible if `bTargeted` is true, Hidden otherwise). Add custom logic, such as playing a sound or highlighting the actor.
     - **Get Targeting Location**: Return the world location of the Widget Component (e.g., using `GetComponentLocation`) to position the lock-on widget.
