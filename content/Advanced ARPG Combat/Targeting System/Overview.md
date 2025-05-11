@@ -1,5 +1,3 @@
-## Overview
-
 The Advanced Targeting System is a robust lock-on targeting solution designed for Unreal Engine 5 projects, integrated within the Advanced ARPG Combat system. Its primary purpose is to enable precise and intuitive target selection and tracking, similar to lock-on mechanics found in souls-like games. The system addresses the need for smooth camera and character rotation toward a selected target, seamless target switching, and reliable target validation in dynamic combat scenarios. It is targeted at game developers working on action RPGs requiring precise targeting mechanics. Unique features include customizable targeting parameters, automatic target validation, and a flexible interface for integrating custom targeting behaviors.
 
 ![[Screenshot 2025-05-06 105004.png]]
