@@ -46,6 +46,31 @@ std::cout << "Hello World! " << std::endl;
 
 ```
 
+2. Support for Mermaid Diagrams
+```cpp
+/* This site is also able to support Mermaid Diagrams which 
+* Mermaid is a JavaScript based diagramming and charting tool 
+* that takes Markdown-inspired text definitions and creates diagrams
+* dynamically in the browser.
+*/
+
+	// Mermaid converts the following text into a diagram
+	flowchart TD
+	A[Deploy to production] --> B{Is it Friday?};
+	B -- Yes --> C[Do not deploy!];
+	B -- No --> D[Run deploy.sh to deploy!];
+	C ----> E[Enjoy your weekend!];
+	D ----> E[Enjoy your weekend!];
+```
+
+```mermaid
+flowchart TD
+A[Deploy to production] --> B{Is it Friday?};
+B -- Yes --> C[Do not deploy!];
+B -- No --> D[Run deploy.sh to deploy!];
+C ----> E[Enjoy your weekend!];
+D ----> E[Enjoy your weekend!];
+```
 
 > [!NOTE] NOTE:
 >  Since this is a Github based solution, you can download the markdown files HERE if you would like to have an offline markdown version: https://github.com/GameCodeMastery/documentation/
