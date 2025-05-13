@@ -79,21 +79,20 @@ This section provides a comprehensive guide on operating and extending the Advan
 ![[Attribute Curve.png]]
 
 4. Test by modifying the governing attribute and checking the governed attribute’s value:
-    
     ```blueprint
     ModifyAttribute (AttributeTag: Attribute.Endurance, Value: 10) -> GetCurrentAttributeValue (AttributeTag: Attribute.Stamina) -> Print String
     ```
-    
+
 
 ### Creating Custom Extended Attributes
 
 1. Create a new Blueprint class inheriting from `BP_BaseExtendedAttribute` (e.g., `BP_HealthExtendedAttribute`).
 2. Implement custom logic in functions like `OnAttributeValueModified`:
-    
+
     ```blueprint
     OnAttributeValueModified -> If GetCurrentAttributeValue (Attribute.Health) <= 0 -> Trigger Death Ability
     ```
-    
+
 3. Add the new class to the `ExtendedAttributes` array in the `BP_AttributesComponent` or relevant data asset.
 4. Test by modifying the associated attribute and verifying the custom logic triggers.
 

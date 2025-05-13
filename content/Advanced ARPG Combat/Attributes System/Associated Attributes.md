@@ -4,6 +4,8 @@ The Associated Attributes System in the Advanced Attributes System, designed for
 
 This system addresses the need for scalable, designer-friendly progression systems that allow attributes to influence one another without requiring manual mathematical calculations. By leveraging Curve Tables, it provides a flexible framework for balancing gameplay mechanics, such as implementing diminishing returns or exponential growth, making it ideal for creating nuanced character progression in RPGs.
 
+![[Attribute Curve.png]]
+
 ---
 
 ## Basic Usage

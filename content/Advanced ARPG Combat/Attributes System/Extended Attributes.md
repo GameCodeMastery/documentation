@@ -20,7 +20,6 @@ The Extended Attribute classes are used to enhance attributes by attaching custo
             ```
 
 2. **OnCurrentAttributeValueUpdated**
-    
     - **Purpose**: Called when the attribute’s current value is updated, including changes from regeneration or other automatic processes.
     - **Usage**:
         - Use to trigger visual or gameplay effects, such as updating a stamina-based effect.
