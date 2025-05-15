@@ -1,8 +1,6 @@
-## Overview
+The **Associated Attributes** feature in the Advanced Attributes System allows one attribute to dynamically govern or influence the value of one or more other attributes. This relationship is defined using curves, enabling designers to model progression systems (such as stat-based scaling or level-up systems) without writing complex formulas.
 
-The Associated Attributes System in the Advanced Attributes System, designed for Unreal Engine 5, is a compound data type implemented as the `AssociatedAttributes` map within the `F_Attribute` struct. Its purpose is to enable attributes to govern the values of other attributes using curve-based calculations, facilitating complex leveling mechanics in Action RPGs, such as those found in souls-like games. For example, an `Endurance` attribute can dynamically adjust a `Stamina` attribute based on a designer-defined curve.
-
-This system addresses the need for scalable, designer-friendly progression systems that allow attributes to influence one another without requiring manual mathematical calculations. By leveraging Curve Tables, it provides a flexible framework for balancing gameplay mechanics, such as implementing diminishing returns or exponential growth, making it ideal for creating nuanced character progression in RPGs.
+This mechanism is ideal for action RPGs or stat-driven systems where an attribute like Vitality might increase MaxHealth or Endurance might increase Stamina.
 
 ![[Attribute Curve.png]]
 
@@ -10,57 +8,62 @@ This system addresses the need for scalable, designer-friendly progression syste
 
 ## Basic Usage
 
-The Associated Attributes System is used to define relationships where a governing attribute modifies the value of one or more governed attributes via Curve Tables. Below are the key functions, their purposes, and how they can be used in Blueprints.
+To use Associated Attributes:
 
-1. **ModifyAttribute**
-    - **Purpose**: Modifies the governing attribute’s value, triggering updates to all governed attributes defined in its `AssociatedAttributes` map.
-    - **Usage**:
-        - Call on the `BP_AttributesComponent` to adjust the governing attribute, which automatically recalculates governed attribute values based on the Curve Table.
-        - Example: Increase `Attribute.Endurance` to adjust `Attribute.Stamina`.
-            ```blueprint
-            InputAction IA_TestEndurance (Pressed) -> Get BP_AttributesComponent -> ModifyAttribute (AttributeTag: Attribute.Endurance, Value: 10)
-            ```
+1. **Define the Parent and Child Attribute Tags**
+    - Example:
+        - Parent: `Attribute.Vitality`
+        - Child: `Attribute.HealthMax`
 
-2. **GetCurrentAttributeValue**
-    
-    - **Purpose**: Retrieves the current value of a governed attribute, reflecting updates driven by the governing attribute’s `AssociatedAttributes` map.
-    - **Usage**:
-        - Use to verify or display the governed attribute’s value after modification of the governing attribute.
-        - Example: Check `Attribute.Stamina` after modifying `Attribute.Endurance`.
+2. **Create a Curve**
+    - Use a `CurveFloat` asset to represent the relationship.
+    - X-axis: Value of the parent attribute.
+    - Y-axis: Resulting value to apply to the child attribute.
 
-            ```blueprint
-            Get BP_AttributesComponent -> GetCurrentAttributeValue (AttributeTag: Attribute.Stamina) -> Print String
-            ```
+3. **Assign the Association**
+    - In the `Attributes` array on your `BP_AttributesComponent`, find the parent attribute.
+    - Open its `Associated Attributes` map.
+    - Add a new entry with:
+        - Key: `Attribute.HealthMax`
+        - Value: the desired curve (e.g., `Curve_VitalityToHealthMax`)
 
+4. **Update Behavior**
+    - When the parent attribute is updated, the child attribute is automatically recalculated using the curve.
 
 ---
 
 ## Key Properties
 
-|Property Name|Purpose|
+|Property|Purpose|
 |---|---|
-|`AssociatedAttributes`|A map in the `F_Attribute` struct linking a governing attribute to governed attributes. The key is the governed attribute’s Gameplay Tag (e.g., `Attribute.Stamina`), and the value is a Curve Table row defining the relationship.|
+|`Associated Attributes`|A `Map<FGameplayTag, CurveFloat>` within the `F_Attribute` struct. Defines child attributes to auto-update.|
+|Curve Asset|Represents the mathematical relationship between the parent and each child attribute.|
+|X-Axis (Input)|The value of the parent attribute (e.g., Vitality).|
+|Y-Axis (Output)|The resulting value for the child attribute (e.g., MaxHealth).|
 
 ---
 
 ## Key Concepts
 
-### Curve-Based Attribute Governance
+### Curve-Driven Stat Progression
 
-The Associated Attributes System enables a governing attribute to control the values of governed attributes using Curve Tables, which define the mathematical relationship between the governing attribute’s value (X-axis) and the governed attribute’s value (Y-axis). This allows designers to create complex progression mechanics, such as linear growth, exponential increases, or diminishing returns, without coding.
+Using a `CurveFloat` gives designers precise control over how attributes scale. This removes the need to hardcode stat equations and allows for easily editable balance adjustments.
 
-- **Implementation**: In the `AssociatedAttributes` map of a governing attribute (e.g., `Attribute.Endurance`), add entries where the key is the governed attribute’s Gameplay Tag (e.g., `Attribute.Stamina`) and the value is a Curve Table row (e.g., `EnduranceToStamina`). The Curve Table defines how `Endurance` values map to `Stamina` values.
-- **Use Cases**: Increase stamina based on endurance, boost health regeneration with vitality, or scale damage output with strength.
-- **Best Practices**: Use the Curve Editor to visually adjust curves for intuitive balancing. Test relationships by modifying the governing attribute and checking governed values:
+- Example: A Vitality curve might scale from 100 to 250 health over 99 levels, with diminishing returns starting at level 50.
 
-    ```blueprint
-    ModifyAttribute (AttributeTag: Attribute.Endurance, Value: 5) -> GetCurrentAttributeValue (AttributeTag: Attribute.Stamina) -> Print String
-    ```
+### Modular Design
 
+Because each `F_Attribute` can have its own `Associated Attributes` map, multiple parent-child relationships can coexist independently. For example:
 
-### Designer-Friendly Balancing
+- Endurance → Stamina
+- Strength → AttackPower
+- Intelligence → ManaMax
 
-The use of Curve Tables in the Associated Attributes System empowers designers to balance progression mechanics without requiring programming expertise. By adjusting curves in the Content Browser, designers can fine-tune how attributes influence each other, achieving desired gameplay feel and balance.
+This makes the system highly modular and reusable across characters or archetypes.
+
+### Designer Accessibility
+
+No Blueprint scripting or programming is required. By adjusting curves in the Content Browser, designers can fine-tune how attributes influence each other, achieving desired gameplay feel and balance.
 
 - **How It Works**: A Curve Table row (e.g., `EnduranceToStamina`) maps the governing attribute’s value to the governed attribute’s value. For example, a curve might define `Attribute.Stamina` as 50 at `Attribute.Endurance = 0`, 150 at `Endurance = 50`, and 180 at `Endurance = 100` for diminishing returns.
 - **Customization**: Modify Curve Table rows to adjust progression. For example, flatten the curve at higher values to limit stamina growth:
@@ -72,3 +75,35 @@ The use of Curve Tables in the Associated Attributes System empowers designers t
 
 - **Use Cases**: Create balanced leveling systems where attributes scale appropriately, avoiding overpowered stats at high levels.
 - **Best Practices**: Start with simple linear curves for initial testing, then refine with non-linear curves. Use small increments when testing to ensure smooth progression.
+
+### Real-Time Synchronization
+
+Whenever a parent attribute's base value is modified, the attribute system evaluates its associated attributes and updates them in real-time. This ensures the child values always reflect the parent’s current state.
+
+- Example:
+    ```blueprint
+    ModifyAttributeValue("Attribute.Endurance", +1)
+    → Auto-updates Attribute.Stamina via Curve_EnduranceToStamina
+    ```
+
+
+---
+
+## Best Practices
+
+- Name curves clearly to match their relationship (e.g., `Curve_StrengthToAttack`).
+- Use smooth curve tangents to avoid unnatural stat jumps.
+- Avoid circular associations (e.g., A → B and B → A) to prevent unintended behavior.
+- Always test values at min/max extremes of the parent stat.
+- Keep parent-child mappings organized by gameplay tag structure.
+
+---
+
+## Notes
+
+- Associated Attributes require no custom Blueprint logic to function.
+- The feature is embedded directly in the `F_Attribute` struct.
+- All updates are handled automatically by the attribute component.
+- Particularly useful for Souls-like progression systems or class-based stat boosts.
+
+---

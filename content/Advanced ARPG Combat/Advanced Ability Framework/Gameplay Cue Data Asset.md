@@ -1,63 +1,81 @@
-The `BP_GameplayCue` class in the Advanced Abilities System, designed for Unreal Engine 5, is a Blueprint-based Data Asset that enables the spawning of simple visual and audio effects, such as sparks, blood particles, or hit sounds, without requiring actor instances. Its purpose is to provide a lightweight, efficient method for triggering one-off effects associated with gameplay events, such as ability activations or Gameplay Effects, enhancing player feedback in Action RPGs.
+The `BP_GameplayCue` is a lightweight, data-driven asset used in the Advanced Abilities Framework to play visual or audio effects associated with gameplay events. Unlike `BP_GameplayCueActor`, which is actor-based and designed for persistent or complex logic, the gameplay cue data asset is ideal for quick, one-shot effects such as hit sparks, footsteps, impact sounds, or short bursts of particles.
 
-This compound data type addresses the need for streamlined effect management in scenarios where complex actor-based logic (handled by `BP_GameplayCueActor`, see [[Gameplay Cue Actor]]) is unnecessary. By using the Gameplay Cue Component to spawn effects directly, `BP_GameplayCue` reduces actor overhead, making it ideal for frequent, simple effects like combat impacts or environmental cues.
+This data asset provides a clean way to trigger simple effects without the overhead of spawning an actor into the world.
 
 ---
 
 ## Basic Usage
 
-Gameplay Cue Data Assets are used to trigger simple visual and audio effects via the `BP_AdvancedAbilitySystemComponent`, typically linked to Gameplay Tags in abilities or Gameplay Effects. They do not require manual deletion, as they do not spawn actors. Below are the key functions, their purposes, and how they can be used in Blueprints.
+Gameplay cue data assets are triggered using the Ability System Component, typically as part of a gameplay effect or ability.
 
-1. **OnExecute**
-    - **Purpose**: Executes the logic associated with the Gameplay Cue, such as spawning particles or playing sounds.
-    - **Usage**:
-        - Override in a child Blueprint to define effect behavior, using the Gameplay Cue Component for spawning.
-        - Example: In `BP_HitSoundCue`, play a sound effect.
-            
-            ```blueprint
-            OnExecute -> Play Sound at Location (Sound: HitSound, Location: Target Location)
-            ```
-            
-        - **Note**: Avoid modifying Data Asset variables at runtime, except for local variables, to prevent unintended behavior across instances.
+1. **Create a Cue Asset**
+    - Create a child of `BP_GameplayCue` (e.g., `DA_GC_ImpactHit`).
+    - Assign a `Gameplay Cue Tag` in the Details panel.
+
+2. **Configure Effects**
+    - In the `OnExecute` function, define the visual/audio response.
+    - Use Blueprint nodes such as `SpawnEmitterAtLocation`, `PlaySoundAtLocation`, or `CameraShake`.
+
+```blueprint
+OnExecute:
+→ Spawn Niagara Blood Particle
+→ Play Impact Sound
+→ Apply Camera Shake
+```
+
+3. **Trigger via Ability System Component**
+    - Call `PlayGameplayCue` from the owning actor’s ability system component.
+
+```blueprint
+→ PlayGameplayCue(Tag: Cue.Hit.Light)
+```
 
 ---
 
 ## Key Properties
 
-|Property Name|Purpose|
+|Property|Purpose|
 |---|---|
-|`GameplayCueTag`|The Gameplay Tag associated with the cue (e.g., `Cue.HitSound`). Used to trigger the cue via `Play Gameplay Cue` or Gameplay Effects.|
+|`Gameplay Cue Tag`|Identifies the cue for lookup and execution.|
+|`Visual Effect`|The particle system or Niagara system to play.|
+|`Sound Effect`|The sound cue to trigger at the cue location.|
+|`Camera Shake`|Optional camera shake class for feedback.|
+|`Local Variables`|Internal-only Blueprint variables used to customize behavior at runtime.|
 
 ---
 
 ## Key Concepts
 
-### Lightweight Effect Spawning
+### Stateless, One-Shot Execution
 
-`BP_GameplayCue` is designed for simple, one-off visual and audio effects that don’t require the persistent lifecycle management of `BP_GameplayCueActor`. It leverages the Gameplay Cue Component to spawn effects directly, reducing performance overhead by avoiding actor creation.
+Gameplay cue data assets do not spawn actors or tick. Their behavior is executed once, typically at a location or on a target actor, then considered complete. This makes them ideal for effects that:
 
-- **Implementation**: Create a child Blueprint (e.g., `BP_SparkCue`) and override `OnExecute` to define effect logic. Trigger via `BP_AdvancedAbilitySystemComponent`:
-    
-    ```blueprint
-    ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Play Gameplay Cue (Cue: BP_SparkCue)
-    ```
-    
-- **Use Cases**: Combat effects (e.g., sparks on weapon impact), environmental cues (e.g., footstep sounds), or minor ability feedback (e.g., mana sparkles).
-- **Best Practices**: Ensure `GameplayCueTag` matches the tag used in abilities or Gameplay Effects. Use local variables in `OnExecute` for runtime modifications, avoiding changes to Data Asset properties to maintain consistency.
+- Require no tracking or cleanup.
+- Are triggered frequently (e.g., damage hits, surface steps).
+- Don’t need lifecycle management like `OnRemove` or `Destroy`.
 
-### Non-Actor-Based Effects
+### Separation of Data and Logic
 
-Unlike `BP_GameplayCueActor`, which spawns actors for complex effects, `BP_GameplayCue` operates as a stateless Data Asset, making it ideal for frequent, short-lived effects. It does not require manual deletion, as no actors are created, simplifying cleanup compared to actor-based cues.
+Using cue data assets keeps the system modular. Designers can:
 
-- **How It Works**: The Gameplay Cue Component handles effect spawning (e.g., `Spawn Emitter at Location`, `Play Sound at Location`) when `OnExecute` is called, with no persistent state.
-- **Customization**: Override `OnExecute` to spawn multiple effects or adjust parameters dynamically:
-    
-    ```blueprint
-    OnExecute -> Spawn Emitter at Location (Emitter: BloodParticles, Scale: 1.5) -> Play Sound at Location (Sound: BloodHitSound)
-    ```
-    
-- **Use Cases**: Instant effects like hit particles, sound cues for ability triggers, or lightweight visual feedback for Gameplay Effects.
-- **Best Practices**: Reserve `BP_GameplayCue` for effects that don’t need tick logic or collision, using `BP_GameplayCueActor` for more complex scenarios. Test effect timing to ensure synchronization with gameplay events.
+- Define effects in standalone assets.
+- Modify visuals or audio independently of gameplay logic.
+- Reuse effects across multiple gameplay events.
+
+### Local Variables for Runtime Customization
+
+Cue data assets support internal Blueprint variables for runtime use. These variables are:
+
+- Meant for temporary runtime state (e.g., selected emitter or sound index).
+- Not persistent or meant to store global state.
+- Safe to change within `OnExecute` only.
+
+### Editor-Friendly Workflow
+
+- Store cue assets in a structured folder hierarchy (e.g., `Content/Cues/Impacts`).
+- Prefix with `DA_GC_` for clarity.
+- Categorize cues by event type (e.g., Hit, StatusEffect, Footstep).
+- Use DataTables if you want to bulk manage or associate metadata with cue assets.
 
 ### Impact Effect
 
@@ -88,3 +106,16 @@ Below are the key properties specific to `BP_ImpactEffect` (available in `BP_Cas
 |`Camera Shake Index`|The specific index of the camera shake to use from the `Camera Shake Class` array. Allows precise shake selection.|
 |`Camera Shake Scale`|A float value scaling the intensity of the camera shake. Adjusts the strength of the shake effect.|
 |`GameplayCueTag`|The Gameplay Tag associated with the impact effect (e.g., `Cue.Impact.Blood`). Used to trigger the cue, inherited from `BP_GameplayCue`.|
+
+---
+
+## Best Practices
+
+- Keep cue logic simple—avoid complex branching or state management.
+- Use Gameplay Tags to maintain consistency and avoid duplication.
+- Don’t modify non-local variables at runtime.
+- Use cue actors (`BP_GameplayCueActor`) for anything that needs persistence or logic beyond a single frame.
+
+---
+
+This documentation page describes how to use and customize `BP_GameplayCue` assets in the Advanced Abilities Framework. For examples, explore cues like `DA_GC_BloodSplash`, `DA_GC_StepDust`, or `DA_GC_ShieldImpact`.

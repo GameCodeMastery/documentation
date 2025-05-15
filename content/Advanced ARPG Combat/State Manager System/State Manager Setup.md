@@ -8,7 +8,7 @@ To integrate the State Manager System into an Unreal Engine 5 project (5.3 or la
 ### Integration Steps
 
 1. **Migrate Assets**:
-    - Copy the StateMachine folder from the default project to your project’s Content directory.
+    - Copy the `StateMachine` folder from the default project to your project’s Content directory.
 
 2. **Add State Manager Component**:
     - In the Blueprint Editor, select the target actor (e.g., a player pawn or AI character).

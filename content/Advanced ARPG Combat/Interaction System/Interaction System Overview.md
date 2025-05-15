@@ -1,28 +1,47 @@
-The Advanced Interaction System is a versatile and generic interaction framework designed for Unreal Engine 5 projects, integrated within the Advanced ARPG Combat system. Its primary purpose is to facilitate interactions between actors, enabling an interactor (e.g., a player character) to search for and interact with interactable actors (e.g., loot chests, NPCs, or environmental objects). The system addresses the need for a flexible, reusable mechanism to handle interaction events, such as triggering animations, opening menus, or activating abilities. It is targeted at game developers working on action RPGs, adventure games, or any genre requiring robust actor-to-actor interactions. Unique features include a modular interface-based design, customizable interaction tracing, and support for context-sensitive interaction actions.
+The **Advanced Interaction System** is a modular Blueprint-based framework included in the Advanced ARPG Combat system. It enables dynamic interactions between player-controlled characters (interactors) and interactable world objects (e.g., chests, NPCs, bonfires).
+
+This system solves the common need for a reusable, scalable interaction framework that can power a wide range of gameplay mechanics—from simple prompts to complex context-sensitive behaviors. It is especially useful for developers creating action RPGs, adventure games, or any genre requiring interaction with world elements.
 
 ![[Interaction System Bonfire.png]]
+
+**Key Features**:
+
+- Fully interface-driven architecture
+- Modular, customizable interaction logic
+- Widget support for visual prompts
+- Integration-ready with animation, UI, and ability systems
 
 ---
 
 ## System Architecture
 
-The Advanced Interaction System is built entirely in Blueprints, using a component- and interface-based architecture to ensure flexibility and ease of integration. The system revolves around a core interaction component, an interface for defining interactable actors, and supporting assets for visual feedback and animation integration. Key components and their interactions are as follows:
+The system is built entirely in Blueprints and uses a component-interface design pattern. Below is a high-level diagram of the interaction flow:
 
-- **BP_InteractionComponent**: A component attached to the interactor (e.g., player pawn) that manages interaction logic, including searching for interactable actors via capsule traces, toggling interaction states, and sending interaction events to target actors.
-- **BP_InteractionInterface**: An interface implemented by interactable actors to handle interaction events (e.g., starting or ending interactions, toggling widget visibility) and define custom interaction behavior, including context-sensitive actions triggered by other systems.
-- **BP_Interactable**: A Blueprint actor class serving as a default example of an interactable actor, implementing `BP_InteractionInterface` with basic interaction functionality.
-- **WB_InteractableWidget**: A widget Blueprint providing a default interaction message (e.g., "Press [E] to interact") displayed on interactable actors via a widget component.
-- **ANS_Interact**: An animation notify state that applies an interaction status to an animating actor for the duration of the notify, enabling animation-driven interactions.
+```mermaid
+graph TD
+    Player[Player Character] --> IC[BP_InteractionComponent]
+    IC -->|Trace Detects| Interactable[BP_Interactable or Custom Actor]
+    Interactable -->|Implements| II[BP_InteractionInterface]
+    Interactable --> Widget[WB_InteractableWidget]
+    IC -->|Calls| II.Interact
+    IC -->|Calls| II.ToggleInteractableMessage
+```
 
-**Data Flow**: The `BP_InteractionComponent` performs periodic capsule traces to identify interactable actors based on the `Interactable` object type. When an interactable is found, it triggers `ToggleInteractableMessage` on the actor’s `BP_InteractionInterface` to show/hide the interaction widget. Upon interaction, the component sends `Interact` to initiate actions like animations or abilities (with a reference to the caller) or `EndInteraction` to clean up. Later, other systems (e.g., a menu) can call `StartInteractableAction` on the interactable actor to trigger context-specific actions, such as a bonfire respawning enemies.
+### Key Blueprint Classes
+
+- **BP_InteractionComponent**: Manages traces, interaction toggling, and event dispatch.
+- **BP_InteractionInterface**: Interface used to implement interaction logic on actors.
+- **BP_Interactable**: Example actor that implements the interface and includes a widget.
+- **WB_InteractableWidget**: UI element shown when an actor is in range and interactable.
+- **ANS_Interact**: Animation notify state to trigger interaction states during animations.
 
 ---
 
 ## Core Features
 
-- **Interaction Toggling**: Enables players to start or end interactions with a single input, streamlining interaction workflows.
-- **Interactable Search**: Uses capsule traces to detect nearby interactable actors, with configurable search intervals and object types.
-- **Interaction Events**: Sends generic events (e.g., `Interact`, `EndInteraction`) to interactable actors, allowing behaviors like playing animations or opening menus, with `Interact` providing a caller reference for initiator-driven actions.
-- **Interaction Widget**: Displays a customizable interaction message (e.g., "Press [E] to Open Loot Chest") to guide players.
-- **Context-Sensitive Actions**: Supports specific actions on interactable actors (e.g., a bonfire respawning enemies when a "Rest" button is pressed in a menu) triggered via `StartInteractableAction` by other systems.
-- **Animation Integration**: Leverages `ANS_Interact` to synchronize interaction states with animations, ensuring smooth visual feedback.
+- **Interactable Tracing**: Performs timed capsule traces to detect interactables.
+- **Toggle Message Display**: Sends `ToggleInteractableMessage` to display or hide interaction widgets.
+- **Interaction Event Handling**: Calls `Interact` with a reference to the initiator, allowing custom reactions.
+- **End Interaction**: Ends or cleans up ongoing interaction logic.
+- **Start Interactable Action**: Enables external systems to trigger specific context-sensitive behavior.
+- **Animation Notify Integration**: Use `ANS_Interact` to sync interaction states with animation cues.

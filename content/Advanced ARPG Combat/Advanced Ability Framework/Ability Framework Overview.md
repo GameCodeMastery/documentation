@@ -1,43 +1,74 @@
-The Advanced Abilities System is a modular, Blueprint-based framework designed for Unreal Engine 5 projects, enabling the creation of stateful gameplay systems for Action RPGs and other stat-driven genres. Its purpose is to facilitate the development of complex abilities, attributes, and effects, such as those found in RPGs, using Gameplay Tags, Gameplay Abilities, and Gameplay Effects. Unlike Epic’s Gameplay Ability System, this custom system is built entirely in Blueprints, offering a flexible and designer-friendly solution for managing actor interactions, visual effects, and attribute modifications.
+The **Advanced Abilities Framework** is a flexible, Blueprint-based ability and attribute system designed for Unreal Engine 5. It enables developers to create rich, stateful gameplay systems commonly found in RPGs, action games, and hybrid genres. This system allows for modular ability creation, attribute manipulation, and the orchestration of gameplay effects—all without relying on Epic’s GAS plugin.
 
-The system addresses the need for a scalable, data-driven approach to ability management, allowing developers to create modular gameplay mechanics that can be easily modified or extended. It is tailored for game developers and designers working on RPGs, particularly those integrating with the Advanced Attributes System for attribute management. Standout features include its Gameplay Cue System for visual and audio feedback, support for ability tasks to handle asynchronous logic, and a robust stacking mechanism for Gameplay Effects.
+**Purpose**:
+- Provide a modular system for defining, activating, and managing gameplay abilities and their effects.
+- Simplify the creation of state-based mechanics using gameplay tags, custom effects, and a visual Blueprint workflow.
+
+**Target Audience**:
+
+- Unreal Engine developers creating RPGs, action games, or hybrid systems.
+- Teams seeking a Blueprint-based alternative to GAS.
+
+**Key Features**:
+
+- Fully Blueprint-based—no dependency on Epic's Gameplay Ability System.
+- Includes support for gameplay effects, cues, and ability tasks.
+- Designed for flexibility and customization.
 
 ---
 
 ## System Architecture
 
-The Advanced Abilities System is organized as a collection of Blueprint classes that work together to manage abilities, effects, and visual cues. The `BP_AdvancedAbilitySystemComponent` serves as the central manager, coordinating interactions between actors and the system’s components. Data flows from the Ability System Component to Gameplay Abilities, Effects, Tasks, and Cues, with Gameplay Tags driving conditional logic and state management.
+The system is composed of a set of core Blueprint classes that manage abilities, effects, and gameplay cues. These components interact via gameplay tags, event-driven logic, and class interfaces.
 
-### Key Blueprint Classes and Their Roles
+**Blueprint Classes**:
 
-- **BP_AdvancedAbilitySystemComponent**: An Actor Component that manages abilities, gameplay effects, and gameplay cues for an owning actor (e.g., player or NPC). It handles initialization, ability activation, and effect application.
-- **BP_AdvancedGameplayAbility**: Defines the logic, cost, and activation conditions for in-game abilities. Child Blueprints implement custom functionality (e.g., combat abilities).
-- **BP_GameplayEffect**: Manages attribute modifications, such as instant damage, temporary buffs, or persistent effects (e.g., poison). It supports data-driven customization via properties.
-- **BP_AbilityTask**: A specialized actor class for asynchronous or tick-based logic associated with abilities, such as delayed effects or continuous checks.
-- **BP_GameplayCueActor**: An actor class that spawns and manages visual effects (e.g., particles) and associated logic for gameplay cues.
-- **BP_GameplayCue**: A Data Asset for simple visual and audio effects (e.g., sparks, hit sounds) that don’t require an actor, using the Gameplay Cue Component.
-- **BP_ImpactEffect**: A specialized Gameplay Cue Data Asset for impact effects (e.g., blood, sparks), supporting Cascade and Niagara emitters with surface-specific customization.
+- `BP_AdvancedAbilitySystemComponent`: Manages ability ownership, activation, effects, and cue handling.
+    
+- `BP_AdvancedGameplayAbility`: Defines what an ability does, including cost and activation conditions.
+    
+- `BP_GameplayEffect`: Modifies attributes (e.g., buffs, debuffs, damage over time).
+    
+- `BP_AbilityTask`: Handles specialized tasks tied to an active ability.
+    
+- `BP_GameplayCueActor`: Spawns and manages persistent visual/audio effects.
+    
+- `BP_GameplayCue`: Data-driven cues for simple effects that don’t require actors.
+    
 
-### Data Flow
+**Class Interactions Diagram**:
 
-- **BP_AdvancedAbilitySystemComponent**: Stores and manages abilities, effects, and cues. It processes ability activation, applies effects, and triggers cues based on Gameplay Tags.
-- **BP_AdvancedGameplayAbility**: Executes ability logic, optionally applying Gameplay Effects or spawning Ability Tasks. It interacts with the Ability System Component for cost and condition checks.
-- **BP_GameplayEffect**: Modifies attributes in the Advanced Attributes System and triggers Gameplay Cues for visual feedback.
-- **BP_AbilityTask**: Runs asynchronous or tick-based logic, reporting back to the owning ability or Ability System Component.
-- **BP_GameplayCueActor/BP_GameplayCue**: Handles visual and audio effects, spawned by the Ability System Component or Gameplay Effects.
+```mermaid
+graph TD
+    A[Actor] --> B[BP_AdvancedAbilitySystemComponent]
+    B --> C[BP_AdvancedGameplayAbility]
+    C --> D[BP_GameplayEffect]
+    C --> E[BP_GameplayCueActor]
+    C --> F[BP_GameplayCue]
+    C --> G[BP_AbilityTask]
+    D -->|Modifies| H[Attributes]
+    F -->|Triggers| I[VFX/SFX]
+    E -->|Spawns| I
+```
+
+- The `Actor` owns a `BP_AdvancedAbilitySystemComponent`, which stores and manages `BP_AdvancedGameplayAbility` instances.
+- When abilities activate, they may spawn `BP_GameplayCueActor` or trigger `BP_GameplayCue` Data Assets.
+- `BP_GameplayEffect` instances apply changes to attributes or grant temporary states.
+
 
 ---
 
 ## Core Features
 
-- **Ability Management**: Grants, activates, and ends abilities via `BP_AdvancedAbilitySystemComponent`, supporting modular gameplay mechanics like attacks, spells, or buffs.
-    - **Benefit**: Enables developers to create reusable, customizable abilities for diverse gameplay scenarios.
-- **Gameplay Effects**: Modifies attributes instantly, temporarily, or persistently, with support for stacking, tag-based conditions, and granted abilities.
-    - **Benefit**: Provides a data-driven approach to attribute changes, simplifying complex mechanics like buffs or debuffs.
-- **Gameplay Cue System**: Spawns visual and audio effects (e.g., particles, sounds, camera shakes) using `BP_GameplayCueActor` or `BP_GameplayCue`, enhancing player feedback.
-    - **Benefit**: Streamlines the creation of immersive effects without excessive actor spawning.
-- **Ability Tasks**: Supports asynchronous or tick-based logic for abilities, allowing complex behaviors like delayed effects or continuous checks.
-    - **Benefit**: Offloads specialized logic from abilities, improving organization and performance.
-- **Impact Effects**: Offers pre-configured `BP_ImpactEffect` assets for surface-specific visual effects (e.g., blood, sparks), supporting both Cascade and Niagara systems.
-    - **Benefit**: Simplifies the creation of combat-related visual feedback with customizable properties.
-
+- **Modular Ability Framework**: Create reusable, stateful abilities in Blueprint via `BP_AdvancedGameplayAbility`.
+- **Gameplay Tags Integration**: Use tags to control activation conditions, blocking logic, and effect permissions.
+- **Custom Gameplay Effects**:
+    - Apply attribute modifications.
+    - Support stacking, durations, periodic effects.
+    - Include Execution logic for advanced calculations (e.g., damage formulas).
+- **Gameplay Cues**:
+    - Actor-based cues for persistent effects (e.g., casting circles, auras).
+    - Data asset-based cues for simple effects (e.g., sparks, blood decals).
+- **Ability Tasks**:
+    - Isolated Blueprint actors that execute subtasks, tick logic, or persistent states.
+- **Built-in Support for Cascade & Niagara**: Use either particle system in impact cue data assets.
