@@ -18,12 +18,11 @@ The Collision Manager System is built around a component-and-handler model. Each
 
 ```mermaid
 graph TD
-    Actor --> CollisionComponent[BP_CollisionComponent]
+    Actor --> |Holds| CollisionComponent[BP_CollisionComponent]
     CollisionComponent -->|Manages| TargetType
     TargetType -->|Performs| Trace
     Trace -->|Finds| HitActors
     TargetType -->|Calls| OnHitEvent
-    Ability -->|Uses| TargetType.GetTargets
 ```
 
 ### Key Blueprint Classes
