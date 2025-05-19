@@ -1,103 +1,83 @@
-The `BP_BaseState` is the foundational class used by the Advanced State Manager system to define actor states. It is a Blueprint based `UObject` that encapsulates the logic and behavior for individual states. By extending this class, developers can modularly define what should happen when an actor enters or exits a state, and optionally dictate transitions between states.
-
-This class is critical to building finite state machines (FSMs) that manage actor behavior, AI patterns, animation states, or game mechanics in Unreal Engine 5 projects. It allows states to remain cleanly separated and reusable.
-
----
+The `BP_BaseState` is a UObject-derived Blueprint class within the `State Manager System` for Unreal Engine 5, designed to define and manage individual states for actors, such as characters or AI, in Action RPGs. It enables developers to specify behavior when entering or exiting a state and supports transitions between states, providing a modular framework for state-driven logic. The class addresses the need for reusable, customizable state behaviors, simplifying the creation of states like idle, attacking, or stunned, and ensuring seamless integration with the `BP_StateManagerComponent`.
 
 ## Basic Usage
 
-To use `BP_BaseState`, create a child Blueprint and override key events:
+This section outlines how to use `BP_BaseState` to define and manage state behaviors within the `State Manager System`. The following functions are essential for interacting with states.
 
-1. **CanEnterState**
-    - Determines whether the state can be entered.
-    - Useful for gating logic (e.g., "Can only enter 'Dead' if Health <= 0").
-    - Called automatically by the state manager.
+1. **CanEnterState**:
+    - **Purpose**: Checks if the state can be entered based on defined conditions.
+    - **Usage**: Override in a custom `BP_BaseState` to enforce entry requirements, returning a boolean.
+    - **Example**: In `BP_State_Attack`, ensure the character is alive before entering.
 
-2. **EnterState**
-    - Executes when the actor enters this state.
-    - Override this to start logic such as playing animations or triggering effects.
-    - Example: Activate a hit reaction animation.
+2. **EnterState**:
+    - **Purpose**: Executes logic when the state is entered, such as starting animations or effects.
+    - **Usage**: Override in a custom `BP_BaseState` to define entry behavior.
+    - **Example**: In `BP_State_Attack`, play an attack animation.
 
-3. **EndState**
-    - Called when exiting the state.
-    - Use this to clean up effects or reset conditions.
-    - Example: Disable visual feedback like flashing effects.
+3. **EndState**:
+    - **Purpose**: Executes cleanup logic when the state is exited.
+    - **Usage**: Override in a custom `BP_BaseState` to reset or disable effects.
+    - **Example**: In `BP_State_Attack`, stop the animation.
 
-4. **RunStateMachine**
-    - Optional. Implement custom transition logic to switch between multiple states.
-    - Typically used in subclasses like `BP_StateMachine`.
+4. **Run State Machine**:
+    - **Purpose**: Manages transitions to other states based on conditions.
+    - **Usage**: Override in a custom `BP_BaseState` to define transition logic.
+    - **Example**: In `BP_State_Idle`, transition to `State.Attack` on input.
 
-5. **GetStateTime**
-    - Returns how long the state has been active if `bTrackStateActiveTime` is enabled.
-
-```blueprint
-Event EnterState
-→ Play Animation: "Charge Attack"
-→ Start Timer to End State after 1.5s
-```
-
----
+5. **Get State Time**:
+    - **Purpose**: Returns the duration the state has been active, if `bTrackStateActiveTime` is enabled.
+    - **Usage**: Call in Blueprints to query state duration for timed logic.
+    - **Example**: In `BP_State_Stun`, check if stun duration exceeds 3 seconds.
 
 ## Key Properties
 
-|Property Name|Purpose|
-|---|---|
-|StateTag|Gameplay tag that uniquely identifies the state.|
-|bTrackStateActiveTime|If true, tracks how long the state has been active (in seconds).|
+| Property Name           | Purpose                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `State Tag`             | `Gameplay Tag` identifying the state (e.g., `State.Attack`), used for searching or triggering states. |
+| `bTrackStateActiveTime` | If `true`, tracks the active duration of the state, accessible via `Get State Time`.                  |
 
----
 
 ## Key Concepts
 
-### Modular State Definition
+### State Entry and Exit
 
-States are intended to be modular and self-contained. Each derived `BP_BaseState` should encapsulate the logic for one specific state, making it easier to manage and reuse across different characters or systems.
+The `BP_BaseState` defines behavior when an actor enters or exits a state, controlled by `EnterState` and `EndState`. This concept allows developers to encapsulate state-specific logic, such as playing animations or applying effects, ensuring modular and reusable state behavior.
 
-### Using Tags to Identify States
+- **Purpose**: Provides a framework for state-specific actions at entry and exit.
+- **Usage**: Override `EnterState` and `EndState` in custom states to implement gameplay logic.
+- **Benefit**: Simplifies state management by isolating behavior within state classes.
 
-State tags provide an easy way to reference and activate states using functions like `EnterStateByTag`. It is recommended to follow a consistent naming scheme like `State.Idle`, `State.Attack`, `State.Dead`, etc.
+### State Transition Logic
 
-### Event-Driven Behavior
+The `BP_BaseState` supports transitions to other states via `Run State Machine`, enabling dynamic state changes based on conditions like input or events. This concept is critical for creating finite state machines within individual states or in conjunction with `BP_StateMachine`.
 
-Pair `BP_BaseState` with the State Manager Component’s dispatcher events:
+- **Purpose**: Facilitates state transitions to support complex actor behaviors.
+- **Usage**: Override `Run State Machine` to define conditions for transitioning to other states.
+- **Benefit**: Enhances flexibility in state-driven systems, especially for AI or player mechanics.
 
-- `OnStateBegin`: Useful for triggering external logic.
-- `OnStateEnd`: Useful for resetting UI or gameplay status.
+### State Validation
 
-```blueprint
-Bind Event to OnStateBegin
-→ If Tag == State.HitReaction → Display Damage Effect
-```
+The `CanEnterState` function ensures a state can only be entered under valid conditions, preventing invalid state transitions. This concept is essential for maintaining game state integrity, such as blocking attacks when a character is stunned.
 
-### Tracking State Time
+- **Purpose**: Enforces constraints on state entry to avoid incorrect behavior.
+- **Usage**: Override `CanEnterState` to check conditions like actor status or resources.
+- **Benefit**: Reduces bugs by ensuring states are only entered when appropriate.
 
-If `bTrackStateActiveTime` is enabled, use `GetStateTime` to:
+### Time Tracking
 
-- Gate transitions based on duration.
-- Trigger time-based effects or animations.
-- Sync with UI or cooldown displays.
+The `bTrackStateActiveTime` property and `Get State Time` function allow states to track their active duration, enabling timed behaviors like temporary buffs or stuns. This concept supports precise control over state duration in gameplay.
 
-```blueprint
-If GetStateTime >= 2.0
-→ End State
-```
+- **Purpose**: Tracks how long a state has been active for time-based logic.
+- **Usage**: Enable `bTrackStateActiveTime` and use `Get State Time` in state logic.
+- **Benefit**: Simplifies implementation of timed state effects.
 
-### Extending Functionality
+## Best Practices
 
-You can extend `BP_BaseState` to build:
-
-- `BP_StateMachine`: Supports full FSM behavior and centralized control.
-- Specialized states: e.g., `BP_HitReactionState`, `BP_DodgeState`, `BP_DeathState`.
-
-This approach keeps logic isolated, modular, and easier to maintain.
-
----
-
-## Notes
-
-- States can be triggered at runtime without being pre-defined in the State Manager’s list by using tags.
-- Always use `Call to Parent Function` when overriding if base logic should be preserved.
-- The system works entirely in Blueprints and is designer-friendly.
-- Designed to support any actor: characters, enemies, interactables, etc.
-
----
+- **Workflows**:
+    - Use descriptive `State Tag` names (e.g., `State.Combat.Attack`) for clarity and organization.
+    - Test state transitions with demo states before creating custom ones to understand expected behavior.
+    - Bind `On State Begin` and `On State End` in `BP_StateManagerComponent` to debug state changes.
+- **Pitfalls to Avoid**:
+    - Don’t skip overriding `CanEnterState`; always define entry conditions to prevent invalid states.
+    - Avoid complex logic in `EnterState` or `EndState`; delegate transitions to `Run State Machine`.
+    - Don’t enable `bTrackStateActiveTime` for states that don’t require timing to save performance.

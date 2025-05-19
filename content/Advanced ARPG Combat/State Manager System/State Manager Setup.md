@@ -1,40 +1,95 @@
-To integrate the State Manager System into an Unreal Engine 5 project (5.3 or later), follow these steps to enable functionality with default assets.
+This guide provides step-by-step instructions for integrating the `State Manager System` into an Unreal Engine 5 project, enabling state management for actors in Action RPGs. Users will learn how to set up the system, configure default states, and test state transitions using demo assets. The guide focuses on enabling the system to function as it does in the demo content, ensuring developers and designers can quickly implement state-driven behaviors for characters or AI.
 
 ### Prerequisites
+
 - Unreal Engine 5.3 or later.
-- Optional: A project with the Enhanced Input System enabled (default in Unreal Engine 5 templates).
-- Optional: The Advanced Abilities System for Gameplay Tag integration (see Advanced Abilities System Documentation).
+- `Gameplay Tags` plugin enabled (default in UE5.3+).
+- A pawn or actor Blueprint (e.g., `BP_PlayerCharacter` or `BP_EnemyAI`) for state management.
+- Optional: Enhanced Input System for input-driven state transitions.
 
 ### Integration Steps
 
-1. **Migrate Assets**:
-    - Copy the `StateMachine` folder from the default project to your project’s Content directory.
+1. **Migrate the State Machine Folder**:
+    - In the Unreal Editor, open the demo project containing the `State Manager System`.
+    - In the Content Browser, locate the `StateMachine` folder (containing `BP_StateManagerComponent`, `BP_BaseState`, `BP_StateMachine`, etc.).
+    - Right-click and select **Migrate**, then choose your project’s `Content` directory.
+    - Ensure all dependencies (e.g., Blueprints, Data Assets) are copied correctly.
 
-2. **Add State Manager Component**:
-    - In the Blueprint Editor, select the target actor (e.g., a player pawn or AI character).
-    - Add a `BP_StateManagerComponent` to the actor’s Components panel.
+2. **Add `BP_StateManagerComponent` to Actor**:
+    - Open your target actor Blueprint (e.g., `BP_PlayerCharacter` or `BP_EnemyAI`).
+    - In the Components panel, click **Add Component** and select `BP_StateManagerComponent`.
+    - Verify the component is added in the Details panel.
 
 3. **Configure Default States**:
-    - In the Details panel for `BP_StateManagerComponent`, set the Default State property to a `BP_BaseState` or `BP_StateMachine` class (e.g., `BP_IdleState`).
-    - Add state classes (e.g., `BP_AttackState`, `BP_StunnedState`) to the State Classes array to make them available to the state manager.
+    - In the Details panel of `BP_StateManagerComponent`, set the `Default State` property to a `Gameplay Tag` (e.g., `State.Idle`) from the demo content.
+    - In the `State Classes` array, add default state classes from the demo (e.g., `BP_State_Idle`, `BP_State_Attack`).
+    - Leave other properties (e.g., `bTrackStateActiveTime`) at default values for initial setup.
 
-4. **Set Up Input (Optional)**:
-    - In **Project Settings > Input > Input Actions**, create Input Actions (e.g., IA_Attack, IA_Dodge) and map them to keys in an Input Mapping Context (e.g., IMC_Gameplay).
-    - In the actor’s Blueprint, add an **Enhanced Input Component** and bind Input Actions to call Add Input Atom on BP_StateManagerComponent:
+
+> [!NOTE] Note:
+> When using the State Manager within Advanced ARPG Combat, the Player Info Data Asset and Enemy Info Data Assets are used to configure default states for Enemies and Players
+
+
+4. **Set Up State Transitions**:
+    - Open the demo `BP_StateMachine` (e.g., `BP_BehaviorStateMachine` for AI or `BP_CombatStateMachine` for players).
+    - Ensure it is assigned to the `BP_StateManagerComponent` via `Run State Machine By Class` in demo logic or manually in the Details panel.
+    - Verify demo states reference the `BP_StateMachine` for transitions (no changes needed for default setup).
+
+5. **Integrate with Input (Optional)**:
+    - For input-driven states (e.g., player attacks), ensure an **Input Mapping Context** (e.g., `IMC_Combat`) is set up in **Project Settings > Input**.
+    - In `BP_PlayerCharacter`, bind input actions to trigger state changes:
         ```blueprint
-        InputAction IA_Attack (Pressed) -> Get BP_StateManagerComponent -> Add Input Atom (InputAtomTag: Input.Attack)
+        Enhanced Input Action (IA_Attack, Triggered) -> Get Component By Class (Class: BP_StateManagerComponent) -> Enter State By Tag (StateTag: State.Attack)
         ```
 
-5. **Test with Default Assets**:
-    - Place the actor in a level and play the game.
-    - Use default states (e.g., BP_IdleState, BP_AttackState) included in the StateMachine folder to test state transitions by triggering inputs or calling Enter State By Tag:
+    - Apply the `IMC_Combat` on `Event BeginPlay`:
         ```blueprint
-        Event BeginPlay -> Get BP_StateManagerComponent -> Enter State By Tag (StateTag: State.Idle)
+        Event BeginPlay -> Get Player Controller -> Add Mapping Context (IMC_Combat)
         ```
 
+6. **Test with Default Assets**:
+    - Place the configured actor (e.g., `BP_PlayerCharacter` or `BP_EnemyAI`) in a level.
+    - For AI, use the demo `BP_BehaviorStateMachine` to test transitions (e.g., `State.Patrol` to `State.Chase`).
+    - For players, trigger input actions (e.g., `IA_Attack`) to enter states like `State.Attack`.
+    - Verify state changes by observing `On State Begin` and `On State End` events:
+        ```blueprint
+        BP_StateManagerComponent -> On State Begin (StateTag) -> Print String (Text: Entered State: StateTag)
+        ```
 
-### Troubleshooting
+    - Test transitions by sending events to the state machine:
+        ```blueprint
+        Event Tick -> Get Component By Class (Class: BP_StateManagerComponent) -> Send Event To State Machine (EventTag: Event.EnemyDetected)
+        ```
 
-- **State Not Activating**: Ensure StateTag matches the tag in BP_BaseState or BP_StateMachine. Verify that the state class is in the State Classes array or that runtime state creation is intended.
-- **Inputs Not Registering**: Confirm the **Input Mapping Context** is applied via Add Mapping Context on **Event BeginPlay** in the actor’s Blueprint.
-- **Lingering States**: Check that EndState is called appropriately in BP_BaseState to avoid stuck states.
+    - Confirm the actor transitions between demo states (e.g., `State.Idle` to `State.Attack`) as expected.
+
+## Troubleshooting
+
+- **States Not Triggering**:
+    - Verify `BP_StateManagerComponent` is added to the actor and not disabled.
+    - Ensure `Default State` and `State Classes` are set with valid `Gameplay Tags` or classes from the demo content.
+    - If using the State Manager with Advanced ARPG Combat, ensure the `Defaut State` and `State Classes` are configured through the proper Info Data Assets.
+    - Check that `Enter State By Tag` or `Enter State By Class` uses correct tags or classes.
+- **Transitions Not Occurring**:
+    - Confirm `BP_StateMachine` is assigned and referenced in `Run State Machine By Tag` or `Run State Machine By Class`.
+    - Ensure `Send Event To State Machine` uses valid `EventTag` values defined in the demo `BP_StateMachine`.
+    - Verify `CanEnterState` conditions in state classes allow transitions.
+- **Input-Driven States Not Working**:
+    - Check that `IMC_Combat` is applied via `Add Mapping Context` on `Event BeginPlay`.
+    - Ensure input actions call `Enter State By Tag` with the correct `StateTag`.
+- **AI Behavior Issues**:
+    - Verify `BP_BehaviorStateMachine` is set up in `BP_EnemyAI`’s `BP_StateManagerComponent`.
+    - Confirm AI events (e.g., `Event.EnemyDetected`) are sent to trigger transitions.
+
+## Best Practices
+
+- **Workflows**:
+    - Use demo states (e.g., `BP_State_Idle`, `BP_State_Attack`) to test functionality before adding custom states.
+    - Organize `Gameplay Tags` hierarchically (e.g., `State.Combat.Attack`, `Event.AI.Detected`) for clarity.
+    - Bind `On State Begin` and `On State End` early to debug state changes during testing.
+- **Pitfalls to Avoid**:
+    - Don’t leave `Default State` empty; always set a valid `Gameplay Tag` to avoid undefined behavior.
+    - Avoid duplicating `StateTag` values across states to prevent conflicts.
+    - Don’t call `Enter State By Tag` without ensuring `CanEnterState` conditions are met.
+- **Performance Considerations**:
+    - Disable `bTrackStateActiveTime` for states that don’t require time tracking to optimize performance.

@@ -2,7 +2,6 @@
 aliases:
   - Gameplay Abilities
 ---
-
 The `BP_AdvancedGameplayAbility` class in the `Advanced Abilities Framework` is a Blueprint class that defines in-game abilities for Action RPGs, such as attacks, jumps, or spells. It enables developers to create modular, customizable gameplay mechanics, specifying activation conditions, costs, cooldowns, and effects. This class addresses the need for a flexible, data-driven ability system, allowing designers to script complex behaviors without C++ coding, while integrating seamlessly with the `BP_AdvancedAbilitySystemComponent` for execution and state management.
 
 # Granting and UnGranting Abilities

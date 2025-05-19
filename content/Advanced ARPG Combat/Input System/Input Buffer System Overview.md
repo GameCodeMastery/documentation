@@ -1,3 +1,8 @@
+---
+aliases:
+  - Input Buffer System
+---
+
 The `Input Buffering System` is a Blueprint-based system for Unreal Engine 5 projects, designed to queue player inputs during action commitments, ensuring responsive gameplay in Souls-like Action RPGs. It enables developers to capture and process inputs when abilities block other actions, preventing missed inputs and enhancing player control. The system addresses the problem of unresponsive gameplay by queuing inputs (e.g., dodge or attack) during abilities like healing, executing them when the buffer window closes. Targeted at game developers and designers building combat-heavy games, its standout features include seamless integration with the `Advanced Abilities System`, animation-driven buffer control, and customizable input tracking.
 
 ## System Architecture
