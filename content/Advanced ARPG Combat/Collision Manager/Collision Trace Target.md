@@ -1,108 +1,88 @@
-The **Collision Trace Target (`BP_TraceTarget`)** is a collision handler class used within the Advanced Collision Manager System. It is designed for real-time hit detection using trace-based collision logic. As a child of `BP_TargetType`, it performs continuous traces using **collision primitive components** rather than sockets. This makes it ideal for simple, actor-centric collision detection scenarios, such as projectile impacts or radial trace detection from static components.
-
-Its extended variant, the **Sweeping Socket Trace Target (`BP_SweepingSocketTraceTarget`)**, is specialized for sweeping melee-style attacks. This class is **socket-based**, using defined socket names on a skeletal mesh to perform precise trace sweeps and optionally render trail visuals.
-
----
+The `BP_TraceTarget` class in the `Collision Manager` system is a Blueprint class derived from `BP_TargetType`, designed to handle continuous, tick-based collision tracing for detecting hits in Action RPGs. It enables developers to create persistent hit detection for abilities or weapons, such as laser beams or ongoing melee sweeps, without requiring manual trace setup. This class addresses the need for dynamic, automated collision detection that searches for targets until deactivated, integrating seamlessly with the `BP_CollisionComponent` to support combat mechanics.
 
 ## Basic Usage
 
-### Common Functions (inherited and extended)
+The `BP_TraceTarget` is used by adding it to a `BP_CollisionComponent` and configuring its trace behavior. Below are the primary functions for interacting with it in Blueprints.
 
-1. **CollisionTrace**
-    - Performs trace logic during each tick while the collision is active.
-    - Used to detect and record hits against valid targets.
+1. **ActivateCollision**:
+    - **Purpose**: Starts the continuous tick-based collision trace.
+    - **Usage**: Call via `ActivateCollisionByTag` on `BP_CollisionComponent` to begin tracing.
+    - **Example**:
+```blueprint
+ ActivateAbility -> Get Component By Class (Class: BP_CollisionComponent) -> ActivateCollisionByTag (GameplayTag: Collision.MyTrace)
+  ```
 
-2. **OnHit**
-    - Called when the trace collides with a valid target.
-    - Override this to apply damage, play VFX, or handle impact logic.
+2. **DeactivateCollision**:
+    - **Purpose**: Stops the collision trace and performs cleanup.
+    - **Usage**: Call via `DeactivateCollisionByTag` to end tracing when no longer needed.
+    - **Example**:
+```blueprint
+ EndAbility -> Get Component By Class (Class: BP_CollisionComponent) -> DeactivateCollisionByTag (GameplayTag: Collision.MyTrace)
+```
 
-3. **ActivateCollision / DeactivateCollision**
-    - Begin or stop the trace activity. Use during animation windows or ability activation periods.
-4. **StartTrail / EndTrail**
-    - Optional hooks to start or end a trail visual effect, often tied to socket motion.
+3. **CollisionTrace**:
+    - **Purpose**: Performs the actual tick-based collision tracing to detect hits.
+    - **Usage**: Override in a child Blueprint to customize trace logic (e.g., trace shape, channel).
+    - **Example**:
+```blueprint
+ CollisionTrace -> Multi Line Trace By Channel (TraceChannel: Weapon, Start: ActorLocation, End: ActorLocation + ForwardVector * 500) -> Process Hits
+ ```
 
-5. **SetCollisionProperties**
-    - For `BP_SweepingSocketTraceTarget`, configure the skeletal mesh and socket setup used for tracing.
-
----
+4. **OnHit**:
+    - **Purpose**: Executes logic when the trace hits a valid target.
+    - **Usage**: Override to apply effects or trigger events on hit.
+    - **Example**:
+ ```blueprint
+ OnHit -> Apply Gameplay Effect By Class (Class: GE_DamageEffect, Target: Hit Actor)
+ ```
 
 ## Key Properties
 
-|Property|Purpose|
+|Property Name|Purpose|
 |---|---|
-|CollisionRadius|Radius of the trace for hit detection.|
-|CollisionObjectTypes|List of object types this trace can interact with.|
-|CollisionProfileNamesToIgnore|Profiles to ignore during trace evaluation.|
-|GameplayTagsToIgnore|Tags that cause actors to be ignored during collision.|
-|ActorClassesToIgnore|Specific actor classes to ignore during trace.|
-|DrawDebugType|Whether to show visual debug lines during tracing.|
-
-### Additional Properties (Sweeping Socket Trace Target Only)
-
-|Property|Purpose|
-|---|---|
-|CollisionTrail|Optional trail particle or ribbon system for visualizing trace movement.|
-|TrailStartSocket|Name of the start socket for the collision trail.|
-|TrailEndSocket|Name of the end socket for the collision trail.|
-
----
+|`Collision Radius`|Defines the radius of the trace (e.g., for sphere or capsule traces); adjustable for trace size.|
+|`Collision Object Types`|Specifies object types the trace can collide with (e.g., `Pawn`, `WorldStatic`).|
+|`Collision Profile Names to Ignore`|Ignores hits from actors with these collision profile names.|
+|`Gameplay Tags to Ignore`|Ignores hits from actors with any of these `Gameplay Tags`.|
+|`Actor Classes to Ignore`|Ignores hits from actors of these classes.|
+|`Draw Debug Type`|Sets debug visibility for the trace (e.g., `For One Frame`, `Persistent`); used for testing.|
 
 ## Key Concepts
 
-### Primitive-Based Tracing (BP_TraceTarget)
+### Continuous Tick-Based Tracing
 
-The `BP_TraceTarget` uses **collision primitive components** (such as spheres or capsules) to define trace origins and destinations. This enables flexible trace setups without requiring skeletal mesh sockets.
+The `BP_TraceTarget` performs ongoing collision traces on each tick while active, detecting hits until deactivated. This is ideal for abilities or weapons requiring persistent hit detection, like a continuous beam or a prolonged melee attack.
 
-- Example: Use a series of capsule components to define the arc of a radial attack.
-- Practical for actor-centric tracing such as projectiles, stationary AOEs, or radial explosions.
+- **Purpose**: Automates repeated tracing for dynamic combat scenarios.
+- **Usage**: Activate via `ActivateCollisionByTag` and configure trace parameters in `CollisionTrace`.
+- **Benefit**: Simplifies setup for continuous hit detection without manual trace management.
 
-### Socket-Based Tracing (BP_SweepingSocketTraceTarget)
+### Hit Event Handling
 
-The `BP_SweepingSocketTraceTarget` uses **socket-based tracing** between a start and end socket on a skeletal mesh. This allows for:
+When a trace detects a valid hit, the `OnHit` event fires, allowing developers to apply `Gameplay Effects`, spawn cues, or trigger other logic. This ensures seamless integration with combat systems.
 
-- Precise hit detection based on skeletal mesh movement
-- Accurate representation of melee weapon paths (e.g., swords, claws)
-- Example: `StartSocket = "Tip"`, `EndSocket = "Base"` traces a line between these sockets each frame.
+- **Purpose**: Enables custom responses to collision hits.
+- **Usage**: Override `OnHit` in a child Blueprint to define hit behavior.
+- **Benefit**: Provides flexibility to tailor hit reactions to specific gameplay needs.
 
-### Real-Time Collision Execution
+### Trace Customization
 
-Once activated, the trace component performs collision checks every frame until deactivated. This is particularly effective for:
+The `BP_TraceTarget` supports customizable trace behavior through properties like `Collision Radius` and `Collision Object Types`, and by overriding `CollisionTrace`. This allows developers to adapt traces to specific use cases, such as line, sphere, or multi-trace setups.
 
-- Melee weapon swings
-- Combo chains with different hit windows
-- Abilities with dynamic AOE sweep zones
-
-### Visual Trails
-
-In the `BP_SweepingSocketTraceTarget`, trail effects can be used to visually enhance attacks. These trails are:
-
-- Optional (defined by `CollisionTrail`)
-- Socket-driven (start/end defined by `TrailStartSocket` and `TrailEndSocket`)
-
-Use this for stylized combat feedback, such as:
-
-- Sword swipes
-- Energy arcs
-- Weapon trails in cinematic attacks
-
----
+- **Purpose**: Offers control over trace shape, targets, and filtering.
+- **Usage**: Adjust properties in the Details panel or override `CollisionTrace` for custom logic.
+- **Benefit**: Ensures precise collision detection tailored to project requirements.
 
 ## Best Practices
 
-- For `BP_TraceTarget`, ensure collision primitives are well-positioned and scaled for your trace design.
-- For `BP_SweepingSocketTraceTarget`, skeletal meshes must have properly named and placed sockets.
-- Minimize trace interval times for accurate high-speed actions.
-- Use debug trace visuals during testing to fine-tune collision windows.
-- Always call `DeactivateCollision` to stop tracing and avoid unnecessary overhead.
-- Avoid duplicating trace targets—reuse with tags where possible.
-
----
-
-## Notes
-
-- Fully Blueprint-based; extendable through Blueprint child classes.
-- `BP_TraceTarget` is **not socket-based**, making it suitable for radial or actor-relative traces using primitive components.
-- `BP_SweepingSocketTraceTarget` is **socket-based**, ideal for weapon tracing synchronized with animation.
-- Integrates seamlessly with the Advanced Combat and Ability systems.
-
----
+- **Workflows**:
+    - Use `BP_TraceTarget` for abilities or weapons needing continuous hit detection, reserving `BP_SweepingSocketTraceTarget` for mesh-based melee attacks.
+    - Test traces with `Draw Debug Type` set to `For Duration` to visualize trace paths before finalizing.
+- **Pitfalls to Avoid**:
+    - Always call `DeactivateCollisionByTag` to stop tracing; leaving traces active causes performance issues.
+    - Don’t set `Collision Radius` too large, as it increases trace computation cost.
+    - Avoid overriding `ActivateCollision` or `DeactivateCollision` without calling parent functions to ensure proper state management.
+- **Performance Considerations**:
+    - Limit active `BP_TraceTarget` instances by deactivating unused traces promptly.
+    - Use `Collision Profile Names to Ignore` and `Actor Classes to Ignore` to reduce unnecessary trace checks.
+    - Disable `Draw Debug Type` in production to eliminate debug rendering overhead.

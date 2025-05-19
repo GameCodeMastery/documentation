@@ -1,98 +1,88 @@
-The **Attribute Progress Bar Widget** (`WB_AttributeProgressBar`) is a reusable, designer-friendly user interface component that visually displays an attribute’s current and maximum value. It is part of the Advanced Attributes System and is intended to be dropped into any HUD to show stats like Health, Mana, Stamina, or any custom attribute.
-
-This widget supports both a primary fill bar and an optional delayed lerp bar for enhanced visual feedback when attribute values change.
-
----
+The `WB_AttributeProgressBar` widget in the `Advanced Attributes System` provides a customizable progress bar for displaying attribute values, such as health or stamina, on the HUD in Unreal Engine 5 projects. It enables developers to visually represent attribute data with dynamic updates, optional lerp animations, and size scaling based on the max attribute value, enhancing player feedback in Action RPGs. This widget addresses the need for a plug-and-play solution to integrate attribute visualization, ensuring seamless connection with the `BP_AttributesComponent` for real-time updates and souls-like visual feedback for player progression.
 
 ## Basic Usage
 
-The widget is initialized and updated using the `InitializeStatBar` function, which links it to a valid `BP_AttributesComponent` at runtime.
+The `WB_AttributeProgressBar` is added to a HUD widget Blueprint and configured via the Details panel to display an attribute’s value. Below is the primary method for using it in Blueprints.
 
-### Steps:
+### Setup in a HUD Widget
 
-1. **Add Widget to HUD**
-    - Open your HUD widget.
-    - Add a `WB_AttributeProgressBar` to your canvas or vertical box.
+1. Open your player HUD widget (e.g., `WBP_PlayerHUD`).
+2. Drag a `WB_AttributeProgressBar` into the desired container (e.g., `AttributeBarsVerticalBox`).
+3. Set the following properties in the Details panel:
+    - `AttributeTag`: The tag of the attribute to display (e.g., `Attribute.Health`).
+    - `MaxAttributeTag`: The tag of the attribute representing the maximum value (e.g., `Attribute.HealthMax`).
 
-2. **Configure in Details Panel**
-    - Set `AttributeTag` to the attribute this bar should reflect (e.g., `Attribute.Health`).
-    - Set `MaxAttributeTag` to the attribute's corresponding max value (e.g., `Attribute.HealthMax`).
+### Initialize the Progress Bar
 
-3. **Initialize in Blueprint**
-    - In the HUD’s Event Graph:
-        ```blueprint
-        OnInitialized
-        → Get Owning Player Pawn
-        → Get Component by Class (BP_AttributesComponent)
-        → Call InitializeStatBar on the progress bar
-        ```
+To bind the widget to the correct `BP_AttributesComponent`, call the `InitializeStatBar` function in the event graph:
 
-    - Pass the attributes component reference into the `InitializeStatBar` function.
+```blueprint
+Event OnInitialized →
+  Get Owning Player Pawn →
+  GetComponentByClass (BP_AttributesComponent) →
+  InitializeStatBar (Target: WB_AttributeProgressBar, Input: Attributes Component)
+```
 
+> If using the default HUD included in the **Advanced ARPG Combat** framework, simply add the progress bar to the container. Initialization is handled automatically.
 
-> Note: If you use the ARPG Combat default HUD, initialization is handled automatically when the progress bar is added to the `AttributeBarsVerticalBox`.
+To configure the widget:
 
----
+- Add `WB_AttributeProgressBar` to your HUD Blueprint (e.g., `WBP_HUD`) in a container (e.g., `VerticalBox`).
+- Select the widget and, in the Details panel, set `AttributeTag` (e.g., `Attribute.Health`), `MaxAttributeTag` (e.g., `Attribute.HealthMax`), and other properties like `AttributeBarStyle` or `bUpdateAttributeLerpBar` to customize appearance and behavior.
 
 ## Key Properties
 
-| Property Name                | Purpose                                                                                                                                                                                                                                                 |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AttributeTag`               | The gameplay tag associated with the primary attribute shown in the progress bar.                                                                                                                                                                       |
-| `MaxAttributeTag`            | The gameplay tag for the attribute’s maximum value, used to calculate fill percentage.                                                                                                                                                                  |
-| `AttributeBarStyle`          | Controls the style (e.g., color, shape) of the main fill bar.                                                                                                                                                                                           |
-| `LerpBarStyle`               | Style for the optional delayed bar that visually trails the primary bar.                                                                                                                                                                                |
-| `bUpdateAttributeLerpBar`    | If true, enables lerp bar animations when attribute values change.                                                                                                                                                                                      |
-| `AttributeFillBarAndOpacity` | Set the fill color and opacity of the main bar.                                                                                                                                                                                                         |
-| `LerpBarFillColorAndOpacity` | Set the fill color and opacity of the lerp/trail bar.                                                                                                                                                                                                   |
-| `MaxAttributeUpdateWidth`    | A boolean that determines if the maximum attribute value (e.g., `Attribute.HealthMax`) should scale the progress bar’s width on screen. When true, the bar’s width increases as the max attribute grows (e.g., wider health bar for higher max health). |
-| `CustomWidthOverride`        | A float value that sets the progress bar’s width on screen when `MaxAttributeUpdateWidth` is false. Allows manual control over the bar’s size.                                                                                                          |
-
----
+|Property Name|Purpose|
+|---|---|
+|`AttributeTag`|The Gameplay Tag of the attribute to display (e.g., `Attribute.Health`).|
+|`MaxAttributeTag`|The Gameplay Tag of the max attribute for percentage calculations and optional size scaling (e.g., `Attribute.HealthMax`).|
+|`AttributeBarStyle`|Defines the visual appearance of the main progress bar (e.g., color, texture).|
+|`LerpBarStyle`|Defines the visual appearance of the lerp bar for animations.|
+|`bUpdateAttributeLerpBar`|Enables/disables lerp animations to show value changes (e.g., health decrease).|
+|`AttributeFillBarAndOpacity`|Sets the fill color and opacity of the main progress bar.|
+|`LerpBarFillColorAndOpacity`|Sets the fill color and opacity of the lerp bar.|
+|`MaxAttributeUpdateWidth`|A boolean that enables scaling the progress bar’s width based on the `MaxAttributeTag` value (e.g., wider bar for higher `Attribute.HealthMax`).|
+|`CustomWidthOverride`|A float that sets the progress bar’s width when `MaxAttributeUpdateWidth` is false, allowing manual size control.|
 
 ## Key Concepts
 
-### Lerp Feedback for Value Changes
+### Dynamic Progress Updates
 
-The `WB_AttributeProgressBar` supports a visual trail effect where a secondary bar (lerp bar) lags behind the main bar to indicate the difference between old and new values.
+The `WB_AttributeProgressBar` automatically updates to reflect changes in the linked attribute’s `CurrentValue` relative to its `MaxAttributeTag`. This ensures real-time HUD feedback when attributes are modified (e.g., taking damage).
 
-- Especially useful for health loss visuals.
-- Designers can toggle this feature using `bUpdateAttributeLerpBar`.
+- **Purpose**: Provides immediate visual representation of attribute changes.
+- **Usage**: Configure `AttributeTag` and `MaxAttributeTag` in the Details panel, then initialize with `BP_AttributesComponent`.
+- **Benefit**: Simplifies HUD integration with minimal setup.
 
-### Blueprint Initialization Logic
+### Lerp Animation
 
-To function, the widget must be initialized with a reference to a valid `BP_AttributesComponent`. This ensures:
+The lerp bar, controlled by `bUpdateAttributeLerpBar`, displays a smooth transition between the previous and new attribute values (e.g., a gradual health decrease). This enhances visual polish for player feedback.
 
-- It binds to relevant dispatchers.
-- It receives real-time updates for the selected attributes.
+- **Purpose**: Improves readability of attribute changes through animations.
+- **Usage**: Enable `bUpdateAttributeLerpBar` in the Details panel and customize `LerpBarStyle` for desired visuals.
+- **Benefit**: Enhances player experience with smooth, intuitive feedback.
 
-```blueprint
-InitializeStatBar(AttributesComponent)
-→ Updates on OnCurrentAttributeValueUpdated and OnBaseAttributeValueUpdated
-```
+### Customizable Appearance
 
-### Designer-Friendly Customization
+The widget supports extensive visual customization via `AttributeBarStyle` and `LerpBarStyle`, allowing designers to adjust colors, textures, and opacity in the Details panel to match the game’s aesthetic.
 
-- All styles are exposed as properties in the Details Panel.
-- No need to edit the widget graph for basic usage.
-- Easily theme bars by category (e.g., red for health, blue for mana).
+- **Purpose**: Aligns the progress bar with the game’s visual design.
+- **Usage**: Modify `AttributeFillBarAndOpacity` and `LerpBarFillColorAndOpacity` in the Details panel.
+- **Benefit**: Offers flexibility for designers without requiring code changes.
 
----
+### Max Attribute Size Scaling
+
+The `MaxAttributeUpdateWidth` feature scales the progress bar’s width based on the `MaxAttributeTag` value, similar to souls-like games. For example, a higher `Attribute.HealthMax` results in a wider health bar, visually indicating player progression. When disabled, `CustomWidthOverride` sets a fixed width.
+
+- **Purpose**: Provides visual feedback on attribute growth for enhanced player engagement.
+- **Usage**: Enable `MaxAttributeUpdateWidth` or set `CustomWidthOverride` in the Details panel.
+- **Benefit**: Reinforces player progression with intuitive HUD scaling.
 
 ## Best Practices
 
-- Use descriptive attribute tags (`Attribute.Health`, `Attribute.Mana`) for clarity.
-- Keep attribute bars consistent in color and layout for UI clarity.
-- Add bars to the `AttributeBarsVerticalBox` for automatic initialization if using the default ARPG HUD.
-- Test in-game with edge cases (e.g., 0 and max values) to verify visual behavior.
-
----
-
-## Notes
-
-- The widget is fully Blueprint-based and does not require C++.
-- It supports both persistent and temporary attributes.
-- Designed to be reused across multiple characters or HUDs.
-- Can be extended to support icon overlays or text labels if needed.
-
----
+- **Workflows**:
+    - Place `WB_AttributeProgressBar` in `AttributeBarsVerticalBox` when using Advanced ARPG Combat’s `MainHUD` for automatic initialization.
+    - Test progress bar updates and size scaling in-game after modifying max attributes to ensure correct visuals.
+- **Pitfalls to Avoid**:
+    - Don’t forget to set both `AttributeTag` and `MaxAttributeTag` in the Details panel to avoid display or scaling errors.
+    - Avoid enabling `bUpdateAttributeLerpBar` for minor attributes to prevent visual clutter.

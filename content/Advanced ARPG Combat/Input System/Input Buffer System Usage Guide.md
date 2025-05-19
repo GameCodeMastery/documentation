@@ -1,50 +1,27 @@
-### 1. Binding Input Tags to Actions
+This guide provides detailed instructions on using the `Input Buffering System` in an Unreal Engine 5 project, covering key workflows for queuing inputs, managing buffer states, and extending the system with custom input actions. Users will learn how to trigger buffered inputs, integrate with abilities, and create custom input behaviors for Souls-like Action RPGs. The guide is designed for developers and designers to effectively utilize input queuing for responsive combat mechanics.
+### Queuing Inputs
 
-1. In Gameplay Tag Manager, define a new tag (e.g., `InputTag.MyNewAction`).
-2. Create the Input Action using Enhanced Input.
-3. Add New Input Action to desired Input Mapping Context and assign an input to the action
-4. In the pawn or character Blueprint:
-```blueprint
-OnMyInputPressed:
-  -> GetInputBufferComponent -> StoreInputInBuffer(InputTag.MyNewAction, true, Press)
-OnMyInputReleased:
-  -> GetInputBufferComponent -> StoreInputInBuffer(InputTag.MyNewAction, false, Release)
-```
+Queue inputs during action commitments to ensure they execute when the buffer window closes.
 
-#### StoreInputInBuffer Details
-`StoreInputInBuffer` has 3 inputs, `InputTag`, `bConsumeInput`, and `E_InputStatus`.
+1. Ensure the `BP_InputBufferComponent` is added to the pawn (e.g., `BP_PlayerCharacter`).
+2. On input action events, call `Store Input In Buffer` with the appropriate `InputTag` and `Input Status`:
+    
+    ```blueprint
+    Enhanced Input Action (IA_Dodge, Triggered) -> Get Component By Class (Class: BP_InputBufferComponent) -> Store Input In Buffer (InputTag: InputTag.Dodge, bConsumeInputBuffer: true, Input Status: Pressed)
+    ```
+    
+    ```blueprint
+    Enhanced Input Action (IA_Dodge, Completed) -> Get Component By Class (Class: BP_InputBufferComponent) -> Store Input In Buffer (InputTag: InputTag.Dodge, bConsumeInputBuffer: false, Input Status: Released)
+    ```
+    
+3. Verify the input is queued during an `ANS_InputBuffer` window (e.g., in `AM_Heal`).
 
-`InputTag`: The input tag associated with the input being stored in the buffer
-`bConsumeInput`: By default should this input be consumed? If it's not consumed then nothing will happen upon press, only the `OnInputStatusUpdated` will be called indicated the input has been pressed. Set `bConsumeInput` to true on the event that should trigger the input.
-`E_InputStatus`: Update the status of the input in the buffer (e.g. `Press`, `Release`, `Held`)
+### Managing Buffer Windows
 
-### 2. Create Action or Ability Associated with Input
-1. Using a method appropriate for the systems you're using in your game, create code for an action or ability associated with the input.
-2. If using with Advanced Abilities System, create an ability associated with the action:
+Control when the input buffer opens and closes using `ANS_InputBuffer` in Animation Montages.
 
-#### Integration With Abilities System - Bind Abilities To Buffered Inputs
-Abilities can be bound to input tags by assigning them to an input tag through an `AbilitySet` or a `CombatStyle` (a child of `AbilitySet`). Once granted, these abilities are registered with their input tags and can be activated by calling `ActivateAbilitiesByTag` on the actor’s `AbilitySystemComponent`. The `OnInputStatusUpdated` dispatcher can also be used to send input status updates to abilities.
-
-To grant input-bound abilities, use `GiveAbilitySets` on the actor’s `AbilitySystemComponent`, or associate the ability with the appropriate weapon `CombatStyle`.
-
-### 3.  Using Dispatcher Events
-Bind the following dispatcher(delegate) events in your Character or Pawn:
-
-- `On Input Buffer Opened`
-- `On Input Buffer Closed`
-- `On Input Buffer Consumed`
-- `On Input Status Updated`
-
-Use these to trigger animations, activate abilities or actions, UI feedback, or condition checks.
-
-> [!NOTE] NOTE:
-> If using with Advanced Abilities System, the Ability can be activated from the pawn or characters ability system component using the InputTag associated with the input (If the ability was granted and associated with an input tag using an AbilitySet or CombatStyle)
-
-### 4. Create Associated Animation Montage
-1. Create Animation Montage for animation associated with the input.
-2. Add ANS_InputBuffer to associated animation montage you wish to have an input buffer window:
-#### Add Input Buffer Animation Notify State
- As I mentioned on the Input Buffer System page, in order to use the input buffering system you need to add an Animation Notify State, `ANS_InputBuffer`, in your Animation Montages. This will allow you to precisely control the frames of a buffer. During the notify state frames, the inputs will be Queued or stored in a buffer.
+1. Open an Animation Montage (e.g., `SwordSwing_Montage`).
+2. Add an `ANS_InputBuffer` Anim Notify State to the frames where input buffering is needed.
 
 ```mermaid
 gantt
@@ -58,11 +35,82 @@ gantt
     Input Buffer Active (Frames 10-15) :crit, active, 2025-05-14 21:00:00.333, 2025-05-14 21:00:00.500
 ```
 
-
 > [!NOTE] IMPORTANT NOTE:
 >  _If you ever have the issue of the notify state being called twice, E.g. Buffered Input Actions cancel into each other when spamming inputs, make sure to change the Montage Tick Type to Branching Point._
 
 ![[Branching Point.png]]
+
+### Managing Buffer States
+
+1. The buffer opens on notify start, queues inputs, and consumes the last input on notify end, triggering `On Input Buffer Consumed`.
+2. Bind to buffer state events for additional logic:
+    ```blueprint
+    BP_InputBufferComponent -> On Input Buffer Opened -> Spawn Emitter At Location (Emitter: BufferStartFX)
+    ```
+    
+    ```blueprint
+    BP_InputBufferComponent -> On Input Buffer Closed -> Log Message (Text: Buffer Closed)
+    ```
+
+### Handling Consumed Inputs
+
+Process buffered inputs when the buffer consumes them, executing actions or abilities.
+
+1. In `BP_PlayerCharacter`, bind to the `On Input Buffer Consumed` event on `BP_InputBufferComponent`.
+2. Use a `Switch on Gameplay Tag` to handle different `InputTag` cases:
+    
+    ```blueprint
+    On Input Buffer Consumed (InputTag) -> Is Character Dead? -> Branch (False) -> Switch on Gameplay Tag (InputTag) ->
+      Case InputTag.Dodge -> PerformDodge
+      Case InputTag.Attack -> PerformAttack
+    ```
+    
+3. Ensure the pawn validates state (e.g., not dead) before executing actions.
+
+### Integrating with Abilities
+
+Bind abilities to buffered inputs using the `Advanced Abilities System` or custom logic.
+
+1. **Using** `Ability Set` **or** `Combat Style`:
+    - In the `Ability Set` or `Combat Style` Data Asset, assign abilities to `InputTag` values (e.g., `InputTag.Dodge` to `GA_Dodge`).
+    - Grant the `Ability Set` to the pawn on `Event BeginPlay`:
+        ```blueprint
+        Event BeginPlay -> Get AbilitySystemComponent -> GiveAbilitySets(AbilitySet: AS_Combat)
+        ```
+    - Buffered inputs automatically trigger associated abilities when consumed.
+
+2. **Manual Binding**:
+    - In `On Input Buffer Consumed`, activate abilities manually:
+        ```blueprint
+        OnInputBufferConsumed (InputTag: InputTag.Dodge) -> ActivateAbilityByClass(Class: GA_Dodge)
+        ```
+
+### Creating Custom Input Actions
+
+Extend the system by adding new input actions with custom behaviors.
+
+1. Create a new `Gameplay Tag` in the Gameplay Tag Manager (e.g., `InputTag.MyNewInput`).
+2. In **Project Settings > Input**, create a new **Input Action** (e.g., `IA_MyNewInput`) and map it to a key in the `IMC_Combat` **Input Mapping Context**.
+3. In `BP_PlayerCharacter`, bind the input action’s `Pressed` and `Released` events:
+    ```blueprint
+    Enhanced Input Action (IA_MyNewInput, Triggered) -> Get Component By Class (Class: BP_InputBufferComponent) -> Store Input In Buffer (InputTag: InputTag.MyNewInput, bConsumeInputBuffer: true, Input Status: Pressed)
+    ```
+
+    ```blueprint
+    Enhanced Input Action (IA_MyNewInput, Completed) -> Get Component By Class (Class: BP_InputBufferComponent) -> Store Input In Buffer (InputTag: InputTag.MyNewInput, bConsumeInputBuffer: false, Input Status: Released)
+    ```
+
+> [!NOTE] Note:
+> bConsumeInputBuffer determines which StoreInputInBuffer call consumes the input and activates the input action. So set this value to true on the input where you wish for the input to actually happen and set it to false on the other input event.
+
+4. Add `ANS_InputBuffer` to relevant Animation Montages (e.g., `MyAction_Montage`) for buffering.
+5. If no montage exists, create Animation Montage for animation associated with the input.
+6. In `On Input Buffer Consumed`, add a new case for `InputTag.MyNewInput`:
+    ```blueprint
+    On Input Buffer Consumed -> Switch on Gameplay Tag -> Case InputTag.MyNewInput -> PerformMyNewAction
+    ```
+
+7. Test the new input in-game to ensure it buffers and triggers correctly.
 
 ### Example: Dodge Action
 1. Setup `InputTag.Dodge`, `IA_Dodge`, and add the new input action to desired `Input Mapping Context`.
@@ -104,28 +152,32 @@ OnInputBufferConsumed:
 	2. Correctly grant abilities and associate the ability with the input tag
 		1. To grant input-bound abilities, use `GiveAbilitySets` on the actor’s `AbilitySystemComponent`, or associate the ability with the appropriate weapon `CombatStyle`.
 
-### Notes
-- Only **one input is queued** at a time. The most recent input overrides the previous.
-- You may optionally track input holds using `F_TrackedInputAction`.
-- Input Buffer system can be extended for ability-based gameplay.
+## Troubleshooting
 
----
+- **Inputs Not Triggering**:
+    - Confirm `On Input Buffer Consumed` is bound and handles the correct `InputTag`.
+    - Ensure `ANS_InputBuffer` is on the Animation Montage and the montage plays correctly.
+    - Verify `bConsumeInputBuffer` is `true` for the intended trigger event (`Pressed` or `Released`).
+- **Buffer Not Opening**:
+    - Check that `ANS_InputBuffer` is correctly placed in the Animation Montage and the Animation Blueprint references it.
+    - Ensure `BP_InputBufferComponent` is not disabled on the pawn.
+- **Unexpected Input Behavior**:
+    - Verify unique `InputTag` values to avoid conflicts.
+    - Check that `bConsumeInputBuffer` is `false` for non-trigger events to prevent premature consumption.
+- **Abilities Not Activating**:
+    - For `Advanced Abilities System`, ensure abilities are granted via `Ability Set` or `Combat Style` with matching `InputTag` values.
+    - Confirm the pawn has the `Gameplay Ability System` component and abilities are not blocked.
 
 ## Best Practices
 
-- Use Gameplay Tags to define all bufferable actions.
-- Keep notify windows narrow and precise to ensure responsiveness.
-- Pair with Enhanced Input for the cleanest integration.
-- Test using debug prints in `On Input Buffer Consumed` to verify activation timing.
-- Avoid storing multiple overlapping inputs—this system is designed to handle one at a time.
-
----
-
-## Notes
-
-- Fully Blueprint-driven.
-- Compatible with Enhanced Input and Gameplay Tags.
-- Pairs well with animation-driven systems like Advanced Abilities.
-- Enables responsive gameplay that doesn't punish precise timing.
-
----
+- **Workflows**:
+    - Use hierarchical `InputTag` naming (e.g., `InputTag.Combat.Dodge`) for organization.
+    - Test new inputs with existing Animation Montages before creating custom ones.
+    - Centralize input handling in `On Input Buffer Consumed` for maintainability.
+- **Pitfalls to Avoid**:
+    - Don’t add `ANS_InputBuffer` to every Animation Montage; reserve it for committed actions.
+    - Avoid binding `On Input Buffer Consumed` multiple times, as it may cause duplicate executions.
+    - Don’t set `bConsumeInputBuffer` to `true` for both `Pressed` and `Released` unless intentional.
+- **Performance Considerations**:
+    - Use specific `InputTag` filters in `Store Input In Buffer` to avoid queuing irrelevant inputs.
+    - Optimize `On Input Buffer Consumed` logic to avoid complex branching for large input sets.

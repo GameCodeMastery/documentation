@@ -58,7 +58,7 @@ This guide explains how to use the Advanced Targeting System once it is set up. 
 
 ![[Targeting Component Details 1.png]]
 
-**Notes**:
+## Best Practices
 
 - Use default targetable actors for quick testing during setup to verify system functionality.
 - Always implement `Can Be Targeted` to prevent targeting invalid actors (e.g., dead enemies), improving performance and reliability.

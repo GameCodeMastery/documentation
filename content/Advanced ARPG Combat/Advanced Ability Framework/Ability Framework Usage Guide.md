@@ -1,4 +1,8 @@
-This section provides a detailed guide on using the Advanced Abilities System, covering key workflows for activating abilities, applying effects, spawning cues, and creating custom components.
+This guide provides detailed instructions on using the `Advanced Abilities Framework` in an Unreal Engine 5 project, covering key workflows for activating abilities, applying gameplay effects, spawning gameplay cues, and creating custom components. It is designed for developers and designers building Action RPGs, focusing on operational tasks and customization to extend the system with project-specific functionality. By following this guide, users will learn how to leverage the framework’s modular components effectively.
+
+## Usage Guide
+
+This section outlines core workflows for using and customizing the `Advanced Abilities Framework`. Each subsection provides step-by-step instructions with practical Blueprint examples, tailored for both developers and non-programmers.
 
 ## Activating Abilities
 
@@ -168,13 +172,29 @@ Stateless gameplay cues are useful for more complex one off gameplay cues  (e.g.
     ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Activate Task By Class (Class: BP_DelayedEffectTask, bAutoCreateTask: True)
     ```
 
-**Notes**:
+## Troubleshooting
 
-- Always call parent functions for `End Ability`, `Cancel Ability`, and `Interrupt Ability` to ensure proper ability cleanup.
-- Use Gameplay Tags consistently across abilities, effects, and cues to avoid mismatches.
-- Test ability costs and conditions with `CanActivateAbility?` to ensure balanced gameplay.
-- Minimize actor spawns for `BP_GameplayCueActor` by using `BP_GameplayCue` for simple effects.
-- Refer to default combat abilities and effects (e.g., `BP_AttackAbility`, `BP_ImpactEffect`) for implementation examples.
+- **Abilities Fail to Activate**:
+    - Ensure `Activation Required Tags` and `Activation Blocked Tags` are correctly set in `BP_AdvancedGameplayAbility`.
+    - Verify the ability is granted via `Default Abilities` or `Give Ability`.
+- **Gameplay Effects Don’t Apply**:
+    - Check `Duration Policy` is set to `Has Duration` for timed effects and `Duration` is non-zero.
+    - Confirm `Application Required Tags` are met on the target actor.
+- **Gameplay Cues Persist**:
+    - For `BP_GameplayCueActor` with `Instance Per Execution`, call `Destroy Actor` in `OnExecute`.
+    - Ensure `BP_GameplayEffect` has a `Duration` for automatic cue cleanup.
+- **Ability Tasks Don’t End**:
+    - Verify `EndTask` is called in `ActivateTask` or after task completion.
 
----
+## Best Practices
 
+- **Workflows**:
+    - Use `PlayerInfoDataAsset` or `EnemyInfoDataAsset` to centralize ability and effect assignments.
+    - Prototype with preconfigured assets (e.g., `GA_JumpAbility`, `GE_DamageEffect`) before customizing.
+- **Pitfalls to Avoid**:
+    - Don’t modify `BP_GameplayCue` data asset variables at runtime; use local variables instead.
+    - Avoid frequent `Period` ticks (<0.5s) in `BP_GameplayEffect` to prevent performance issues.
+    - Don’t skip parent function calls in `BP_AdvancedGameplayAbility` overrides like `End Ability`.
+- **Performance Considerations**:
+    - Use `BP_GameplayCue` for simple effects to reduce actor spawning.
+    - Limit active `BP_GameplayCueActors` by reusing `Instance Per Actor` for stateful effects.

@@ -1,4 +1,4 @@
-This section provides a comprehensive guide on operating and extending the Advanced Attributes System. It covers key workflows such as modifying attributes, setting and retrieving values, creating regeneratable attributes, configuring associated attributes, and implementing custom extended attributes. Each subsection includes step-by-step instructions and Blueprint examples to ensure developers can effectively use and customize the system for their project’s needs.
+This guide details how to use the `Advanced Attributes System` in an Unreal Engine 5 project after integration. Developers will learn key workflows for modifying attributes, setting up regeneratable attributes, configuring associated attributes, creating custom extended attributes, and displaying attributes on the HUD. The guide also covers customization tasks to extend the system for project-specific needs, ensuring effective use in Action RPGs or similar genres.
 
 ### Modifying Attributes
 
@@ -96,16 +96,31 @@ This section provides a comprehensive guide on operating and extending the Advan
 3. Add the new class to the `ExtendedAttributes` array in the `BP_AttributesComponent` or relevant data asset.
 4. Test by modifying the associated attribute and verifying the custom logic triggers.
 
-### Summary
+## Troubleshooting
 
-In this Usage Guide, we explored how to effectively operate and extend the Advanced Attributes System. We covered modifying attributes using ModifyAttribute and leveraging dispatchers for system integration, setting and retrieving attribute values with functions like SetCurrentAttributeValue and GetCurrentAttributeValue, creating regeneratable attributes with BP_BaseRegeneratableAttribute, configuring associated attributes using curve tables for souls-like leveling, and implementing custom extended attributes for project-specific logic. These workflows enable developers to fully utilize the system’s flexibility and integrate it into their gameplay mechanics.
+- **Attributes Not Updating**:
+    - Verify `AttributeTag` exists in the Gameplay Tags table.
+    - Ensure `BP_AttributesComponent` is initialized on `Event BeginPlay`.
+- **Regeneration Not Working**:
+    - Confirm `BP_BaseRegeneratableAttribute` is in `ExtendedAttributes`.
+    - Check `RegenRate` and `RegenTickInterval` are non-zero.
+- **HUD Not Displaying**:
+    - Ensure `WB_AttributeProgressBar` is initialized with a valid `BP_AttributesComponent`.
+    - Verify `AttributeBarsVerticalBox` is used for Advanced ARPG Combat’s `MainHUD`.
+- **Associated Attributes Not Scaling**:
+    - Check the Curve Table row is correctly assigned in the `AssociatedAttributes` map.
+    - Verify the governing attribute’s value is being modified.
 
-### Notes
+## Best Practices
 
-- Always initialize the `BP_AttributesComponent` to ensure proper functionality.
-- Use Gameplay Tags consistently (e.g., `Attribute.Health`) to avoid mismatches.
-- For regeneratable attributes, ensure both the attribute and max attribute tags are defined.
-- Curve Tables for Associated Attributes provide a powerful way to balance progression without manual calculations.
-- Test attribute modifications incrementally to avoid unexpected behavior, using `Print String` for debugging.
+- **Workflows**:
+    - Centralize attribute setup in `PlayerInfoDataAsset` or `EnemyInfoDataAsset` for consistency.
+    - Use `WB_AttributeProgressBar` for essential attributes only to maintain clean HUDs.
+- **Pitfalls to Avoid**:
+    - Don’t use duplicate `AttributeTag` values in `Attributes` to prevent conflicts.
+    - Avoid complex logic in `OnAttributeValueModified` to maintain responsiveness.
+- **Performance Considerations**:
+    - Minimize `ExtendedAttributes` per actor to reduce overhead.
+    - Optimize `AssociatedAttributes` curves by avoiding overly complex calculations.
+    - Disable `bUpdateAttributeLerpBar` for non-critical HUD attributes to improve performance.
 
-[^1]: 

@@ -1,4 +1,4 @@
-This section provides instructions for integrating the Advanced Attributes System into a fresh Unreal Engine 5 project or using it within the Advanced ARPG Combat framework.
+This guide provides step-by-step instructions for integrating and using the `Advanced Attributes System` in an Unreal Engine 5 project. Developers will learn how to set up the system, configure attributes for actors, display attributes on the HUD, and test default functionality using included assets. The guide focuses on enabling the system as it functions in the Advanced ARPG Combat demo content, ensuring quick and effective integration.
 
 ### Prerequisites
 
@@ -21,11 +21,15 @@ This section provides instructions for integrating the Advanced Attributes Syste
         
 ![[Pasted image 20250511013544.png]]
         
-4. **Define Attributes**:
+4. **Configure Default Attributes**:
     - Select the `BP_AttributesComponent` in the actor’s Details panel.
     - In the `Attributes` array, add elements for each attribute (e.g., `Attribute.Health`, `Attribute.HealthMax`).
     - Set default values (e.g., Base Value = 100 for `Attribute.Health`).
-    - Alternatively, if using Advanced ARPG Combat, define attributes in the `PlayerInfoDataAsset` or `EnemyInfoDataAsset` under the `Attributes` array.
+
+
+> [!NOTE] Note:
+> If using Advanced ARPG Combat, define attributes in the `PlayerInfoDataAsset` or `EnemyInfoDataAsset` under the `Attributes` array.
+
 
 ![[Health Attributes added to player info data asset.png]]
 
@@ -42,21 +46,47 @@ This section provides instructions for integrating the Advanced Attributes Syste
 > If using Advanced ARPG Combat’s default HUD, add the progress bar to the `AttributeBarsVerticalBox`, and initialization is handled automatically.
 
 
-6. **Test the System**:
-    - Create a test input action (e.g., `IA_TestAttribute`) in **Project Settings > Input > Input Actions**.
-    - Map it to a key (e.g., “T”) in an **Input Mapping Context** (e.g., `IMC_Default`).
-    - In the player character Blueprint, bind the input to call `ModifyAttribute` on the `BP_AttributesComponent`:
-        
-        ```blueprint
-        InputAction IA_TestAttribute (Pressed) -> Get BP_AttributesComponent -> ModifyAttribute (AttributeTag: Attribute.Health, Value: -25)
-        ```
-        
-    - Add a `Print String` node to display the result of `GetCurrentAttributeValue` for `Attribute.Health`.
-    - Play in Editor and press the bound key to verify the attribute value changes and regenerates (if configured).
+6. **Configure Test Input**:
+    - In **Project Settings > Input > Input Actions**, create an Input Action (e.g., `IA_TestAttribute`).
+    - In an Input Mapping Context (e.g., `IMC_Default`), map `IA_TestAttribute` to a key (e.g., “T”).
+    - In the actor’s Blueprint, add an `Enhanced Input Component` and bind `IA_TestAttribute` to call `ModifyAttribute`:
+    ```blueprint
+    InputAction IA_TestAttribute (Pressed) -> Get BP_AttributesComponent -> ModifyAttribute (AttributeTag: Attribute.Health, Value: -25)
+    ```
 
-### Troubleshooting
+7. **Test the System**:
+    - Place a default actor (e.g., `BP_PlayerCharacter`) in the level.
+    - Play in Editor and press the bound key (e.g., “T”) to modify `Attribute.Health`.
+    - Verify the attribute updates in the HUD (if set up) or use `GetCurrentAttributeValue` to print the value:
+    ```blueprint
+    ModifyAttribute -> GetCurrentAttributeValue (AttributeTag: Attribute.Health) -> Print String
+    ```
 
-- **Attributes Not Modifying**: Ensure the `Initialize` function is called on the `BP_AttributesComponent` during `Event BeginPlay`.
-- **HUD Not Updating**: Verify that the `WB_AttributeProgressBar` is initialized with a valid `BP_AttributesComponent` reference.
-- **Gameplay Tags Not Found**: Check that the Gameplay Tag table includes the required tags (e.g., `Attribute.Health`). Add new tags via **Gameplay Tags** in the Project Settings.
-- **Regeneration Not Working**: Confirm that the attribute is associated with a `BP_BaseRegeneratableAttribute` class in the `ExtendedAttributes` array.
+## Troubleshooting
+
+- **Attributes Not Modifying**:
+    - Ensure `Initialize` is called on `BP_AttributesComponent` during `Event BeginPlay`.
+    - Verify the `AttributeTag` (e.g., `Attribute.Health`) exists in the Gameplay Tags table.
+- **HUD Not Updating**:
+    - Confirm `WB_AttributeProgressBar` is initialized with a valid `BP_AttributesComponent` reference.
+    - Check that `AttributeBarsVerticalBox` is used if leveraging Advanced ARPG Combat’s `MainHUD`.
+- **Input Not Working**:
+    - Verify the Input Mapping Context (`IMC_Default`) is applied via `Add Mapping Context` on `Event BeginPlay` in the Player Controller.
+    - Ensure the `Enhanced Input Component` is added to the actor.
+- **Regeneration Not Occurring**:
+    - Confirm the attribute is linked to a `BP_BaseRegeneratableAttribute` in the `ExtendedAttributes` array.
+    - Check `RegenRate` and `RegenTickInterval` are set in the regeneratable attribute class.
+
+## Best Practices
+
+- **Workflows**:
+    - Use `PlayerInfoDataAsset` or `EnemyInfoDataAsset` for centralized attribute configuration in Advanced ARPG Combat projects.
+    - Bind `OnAttributeValueModified` to update UI or trigger gameplay events for seamless integration.
+- **Pitfalls to Avoid**:
+    - Don’t skip `Initialize` on `BP_AttributesComponent`, as it sets up critical data.
+    - Avoid duplicate Gameplay Tags in the `Attributes` array to prevent conflicts.
+- **Performance Considerations**:
+    - Limit the number of `ExtendedAttributes` per actor to avoid overhead.
+    - Use simple curves in the `AssociatedAttributes` system to reduce calculation complexity.
+    - Disable `bUpdateAttributeLerpBar` in `WB_AttributeProgressBar` for minor attributes to optimize HUD performance.
+

@@ -1,110 +1,90 @@
-The `BP_GameplayCueActor` is an actor-based component of the Advanced Abilities Framework used to handle visual or audio effects triggered by gameplay events. It is responsible for spawning, managing, and destroying persistent or complex effects such as auras, trails, area markers, or animations.
 
-Unlike gameplay cue data assets, which are used for simple one-shot effects, cue actors are intended for advanced behaviors that may require Blueprint logic, timelines, or actor persistence. They enable developers to encapsulate high-level audiovisual feedback into reusable, modular classes.
-
----
+The `BP_GameplayCueActor` class in the `Advanced Abilities Framework` is a Blueprint actor designed to manage complex visual and audio effects, such as explosions or persistent particle systems, within the ability system. It enables developers to spawn, control, and destroy effects tied to gameplay events, enhancing player feedback in Action RPGs. This class addresses the need for dynamic, stateful, or stateless effect handling, integrating with the `BP_AdvancedAbilitySystemComponent` to trigger effects from abilities or gameplay effects.
 
 ## Basic Usage
 
-Cue actors are spawned and executed through the Ability System Component when a gameplay cue is triggered by an ability or effect.
+The `BP_GameplayCueActor` is used by creating child Blueprints and triggering them via the `BP_AdvancedAbilitySystemComponent`. Below are the primary methods for interacting with it in Blueprints.
 
-1. **Setup a Gameplay Cue Actor**
-    - Create a child Blueprint from `BP_GameplayCueActor` (e.g., `BP_GC_Shockwave`).
-    - Assign a unique Gameplay Cue Tag via the Details panel.
-
-2. **Trigger Cue from Ability System Component**
-    - Call `ExecuteGameplayCueActor` with the tag or class.
-
+1. **OnExecute**:
+    - **Purpose**: Executes the cue’s visual or audio effect logic.
+    - **Usage**: Override in a child Blueprint to define custom effect behavior; manually destroy the actor if needed.
+    - **Example**:
 ```blueprint
-→ ExecuteGameplayCueActor(Tag: Cue.Shockwave)
+OnExecute -> Spawn Emitter At Location (Emitter: ExplosionParticles) -> Delay (2s) -> Destroy Actor
 ```
 
-3. **Override Execution Logic**
-    - In the `BP_GameplayCueActor`, override the `OnExecute` function to define the cue’s behavior.
-    - Optionally override `OnRemove` for cleanup when the cue is ended.
-
+2. **OnRemove**:
+    - **Purpose**: Handles cleanup when the cue is removed.
+    - **Usage**: Override to perform additional cleanup; call `Destroy Actor` if required.
+    - **Example**:
 ```blueprint
-OnExecute:
-→ Spawn Niagara System
-→ Play Sound
-→ Begin Timeline
+OnRemove -> Stop Emitter -> Destroy Actor
+ ```
 
-OnRemove:
-→ Stop Timeline
-→ Destroy Actor
-```
-
----
+3. **Execute Gameplay Cue Actor**:
+    - **Purpose**: Spawns and triggers the cue actor from `BP_AdvancedAbilitySystemComponent`.
+    - **Usage**: Call within an ability or effect to activate the cue.
+    - **Example**:
+```blueprint
+ ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Execute Gameplay Cue Actor (Class: BP_ExplosionCue)
+ ```
 
 ## Key Properties
 
-|Property|Purpose|
+|Property Name|Purpose|
 |---|---|
-|`Gameplay Cue Tag`|Identifies the cue for use with the Ability System Component.|
-|`Instancing Policy`|Defines if the cue should spawn per execution or persist as one instance per actor.|
-
----
+|`Instancing Policy`|Determines spawning behavior: `Instance Per Execution` creates a new actor per trigger; `Instance Per Actor` reuses a single actor for the owning component.|
+|`Gameplay Cue Tag`|Associates a `Gameplay Tag` (e.g., `Cue.Explosion`) with the cue for triggering by tag.|
 
 ## Key Concepts
 
-### Instancing Policy
+### Stateful vs. Stateless Effects
 
-- **Instance Per Execution**:
-    - A new `BP_GameplayCueActor` is spawned every time the cue is executed.
-    - Best suited for instantaneous or short-lived effects that may occur frequently.
-    - Example: A slash trail or impact explosion that should be visually distinct each time it occurs.
+The `BP_GameplayCueActor` supports both stateful (persistent, tracked) and stateless (one-off) effects. Stateful cues use `Instance Per Actor` for effects like ongoing poison clouds, while stateless cues use `Instance Per Execution` for effects like explosions. 
 
-- **Instance Per Actor**:
-    - One persistent instance is used per actor that owns the Ability System Component.
-    - Useful for looping or sustained effects, such as a buff aura or charging animation.
-    - Reduces overhead by reusing the same actor for multiple cue triggers.
+When using a Gameplay Cue Actor with a Gameplay Effect (such as a buff or poisoned effect), **automatic removal of the cue when the effect ends** is only supported when `InstancingPolicy` is set to `InstancePerActor`. This allows the Ability System Component to track and call remove on the cue when the effect ends.
 
-### Lifecycle of a Gameplay Cue Actor
+- **Purpose**: Provides flexibility for different effect types.
+- **Usage**: Set `Instancing Policy` in the Details panel based on the effect’s needs.
+- **Benefit**: Optimizes performance and behavior for specific use cases.
 
-The typical lifecycle involves these stages:
-1. **Spawn**: The Ability System Component spawns the cue using `ExecuteGameplayCueActor`.
-2. **Execute (`OnExecute`)**: The cue begins its visual or audio behavior.
-3. **Loop or Persist**: Optional looping animations, particles, or timelines run.
-4. **Remove (`OnRemove`)**: When the effect ends or is manually cleared, cleanup logic is executed.
-5. **Destroy**: The actor is destroyed (manually or automatically), releasing its resources.
+### Manual Destruction
 
-### Separation of Visual Logic
+Regardless if the `InstancePolicy` is `Instance Per Execution` or `InstancePerActor`, developers must manually destroy the cue actor using `Destroy Actor` when no longer needed to prevent lingering actors.  `Instance Per Execution` are **not automatically deleted** when the Ability System Component is destroyed.
 
-Using `BP_GameplayCueActor` allows designers to separate **gameplay logic** (in abilities and effects) from **visual/audio logic** (in cue actors). This supports clean architecture and parallel development between designers and engineers.
+- **Purpose**: Ensures resource cleanup for gameplay cues.
+- **Usage**: Call `Destroy Actor` in `OnExecute` after a delay or override `OnRemove` and call `Destroy` when no longer needed
+- **Benefit**: Prevents memory leaks and maintains performance.
 
-- Designers can focus on particle effects, sound cues, and UI hooks.
-- Developers maintain logic in gameplay abilities without embedding FX logic directly.
+### Automatic Destruction
+The **only case where** `Instance Per Actor` **cue actors are automatically deleted** is when the owning Ability System Component is destroyed. `Instance Per Execution` `GameplayCues` are **never automatically deleted**.
 
-### Coordination with Abilities and Effects
+- **Purpose**: Ensures resource cleanup for stateful cues.
+- **Usage**: Upon Ability Component destruction, all `InstancePerActor` gameplay cues are automatically destroyed
+- **Benefit**: Prevents memory leaks and maintains performance.
 
-Cue actors are commonly triggered by:
 
-- **Gameplay Effects** applying or removing status effects.
-- **Gameplay Abilities** triggering specific phases (e.g., cast start, hit impact).
+> [!NOTE] NOTE
+> `InstancePerActor` AND `InstncePerExecution` gameplay cues do NOT call `Destroy` by default when `Remove` is called on the gameplay cue. The developer will need to explicitly override `OnRemove` and add `Destroy Actor` to ensure proper cleanup upon gameplay cue removal
 
-Example:
+### Integration with Ability System
 
-```blueprint
-→ GA_SpellCast triggers Cue.Cast.Start via ExecuteGameplayCueActor
-→ Cue plays charge FX, glows, and looping sound
-→ GA_SpellCast ends → OnRemove stops audio and destroys actor
-```
+The `BP_GameplayCueActor` is triggered via `BP_AdvancedAbilitySystemComponent`, either directly by abilities or through `BP_GameplayEffect`. This ensures effects align with gameplay events, such as ability activations or attribute changes.
 
-### Editor Organization Tips
+- **Purpose**: Synchronizes effects with gameplay mechanics.
+- **Usage**: Use `Execute Gameplay Cue Actor` or link to `Gameplay Cues` in a `BP_GameplayEffect`.
+- **Benefit**: Simplifies effect triggering with minimal setup.
 
-To keep your cue library maintainable:
+## Best Practices
 
-- Use naming prefixes like `BP_GC_` for actors and `Cue.` for gameplay tags.
-- Organize cues in folders by category (e.g., Slash, Aura, Impact).
-- Create cue templates for common logic (e.g., looping emitter + fade-out timeline).
-
----
-
-- Always destroy or clean up the cue actor when no longer needed.
-- Use timelines or custom events inside `OnExecute` and `OnRemove` for polished transitions.
-- Keep cue tags descriptive and consistent (e.g., `Cue.Burn`, `Cue.StunLoop`, `Cue.Cast.Start`).
-- Consider exposing variables for reuse in different cue implementations.
-
----
-
-This documentation page provides guidance for using and extending `BP_GameplayCueActor` in the Advanced Abilities Framework. For examples, refer to cues like `BP_GC_SlashTrail`, `BP_GC_ImpactRing`, or `BP_GC_ChargeFX`.
+- **Workflows**:
+    - Use `Instance Per Actor` for stateful cues paired with `BP_GameplayEffect` for automatic cleanup.
+    - Test cues with default effects (e.g., `BP_ExplosionCue`) before creating custom ones.
+- **Pitfalls to Avoid**:
+    - Always call `Destroy Actor` for both `Instance Per Execution` AND `Instance Per Actor` to avoid persistent actors.
+    - Must override `OnRemove` and manually add destroy if the gameplay cue needs to be deleted on removal
+    - When using a Gameplay Cue Actor with a Gameplay Effect (such as a buff or poisoned effect), **automatic removal of the cue when the effect ends** is only supported when `InstancingPolicy` is set to `InstancePerActor`.
+    - Don’t overuse `Instance Per Execution` for frequent effects; prefer `BP_GameplayCue` for simple cases.
+- **Performance Considerations**:
+    - Minimize active `BP_GameplayCueActors` by using `Instance Per Actor` for reusable effects.
+    - Avoid complex logic or frequent ticks in `OnExecute` to reduce overhead.

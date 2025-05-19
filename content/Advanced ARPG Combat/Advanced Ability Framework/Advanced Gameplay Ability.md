@@ -1,138 +1,103 @@
-The `BP_AdvancedGameplayAbility` in the Advanced Abilities Framework defines what a gameplay ability does, including activation conditions, execution logic, and end conditions. It serves as the core unit of behavior in the ability system and allows developers to modularly define combat mechanics, buffs, debuffs, and other player or AI actions using Blueprints.
+---
+aliases:
+  - Gameplay Abilities
+---
 
-This class enables flexible ability creation that can be triggered by tags, input actions, or gameplay events without requiring C++ programming. It offers a high degree of control over the lifecycle of abilities and supports integration with attribute modification, gameplay cues, and ability tasks.
+The `BP_AdvancedGameplayAbility` class in the `Advanced Abilities Framework` is a Blueprint class that defines in-game abilities for Action RPGs, such as attacks, jumps, or spells. It enables developers to create modular, customizable gameplay mechanics, specifying activation conditions, costs, cooldowns, and effects. This class addresses the need for a flexible, data-driven ability system, allowing designers to script complex behaviors without C++ coding, while integrating seamlessly with the `BP_AdvancedAbilitySystemComponent` for execution and state management.
 
 # Granting and UnGranting Abilities
 
 Before an actor can use an ability, that actor’s Ability System Component must be granted that ability. In order to grant & ungrant an ability you must call the following functions:
 
-- _**GiveAbility**_ - grants the ability to the owning actor’s ability system component
-- _**GiveAbilityAndActivateOnce**_ - grants the ability to the owning actor’s ability system component & activates the ability immediately. After the ability completes the ability is ungranted.
-- _**ClearAbility**_ - Ungrants & removes the ability from the actor’s ability system component
-- _**ClearAbilties**_ - Ungrants & removes multiple abilities from the actor’s ability system component
-
----
+- **GiveAbility** - grants the ability to the owning actor’s ability system component
+- **GiveAbilityAndActivateOnce** - grants the ability to the owning actor’s ability system component & activates the ability immediately. After the ability completes the ability is ungranted.
+- **ClearAbility** - Ungrants & removes the ability from the actor’s ability system component
+- **ClearAbilties** - Ungrants & removes multiple abilities from the actor’s ability system component
 
 ## Basic Usage
 
-A Gameplay Ability's basic execution lifecycle, after being granted to an Actor's Ability System Component, looks like this:
+The `BP_AdvancedGameplayAbility` is used by creating child Blueprints and granting them to a `BP_AdvancedAbilitySystemComponent`. Below are the primary methods for interacting with it in Blueprints.
 
-1. **`CanActivateAbility`**
-    - Checks if the ability can currently be activated based on tag conditions or other game state.
-    - Useful for gating logic or UI display (e.g., graying out unusable abilities).
-2. **`TryActivateAbility`**
-    - The standard entry point to attempt activating an ability.
-    - Internally performs a `CanActivateAbility` check and, if valid, proceeds to call `ActivateAbility`.
-3. **`ActivateAbility`**
-    - Main execution function.
-    - Implement custom logic here using Blueprint scripting (e.g., animations, spawning projectiles, applying effects).
-    - Typically followed by a call to `CommitAbility`.
+1. **CanActivateAbility**:
+    - **Purpose**: Checks if the ability can be activated based on tags and costs.
+    - **Usage**: Automatically called by `TryActivateAbility`; override for custom conditions.
+    - **Example**:
+```blueprint
+CanActivateAbility -> Check Attribute.Stamina >= 10 -> Return True
+```
 
-    ```blueprint
-    ActivateAbility:
-    → Play Montage (Attack)
-    → Spawn Projectile
-    → Commit Ability (apply cost)
-    → End Ability
-    ```
+2. **ActivateAbility**:
+    - **Purpose**: Executes the ability’s core logic.
+    - **Usage**: Override in a child Blueprint to define custom behavior; call `CommitAbility` to apply costs.
+    - **Example**:
+```blueprint
+ActivateAbility -> Call CommitAbility -> Spawn Actor (Class: BP_Projectile) -> Start Cooldown
+```
 
-4. **`CommitAbility`**
-    - Deducts resource costs (e.g., stamina, mana) and applies any activation tags or cooldowns.
-5. **`EndAbility`**
-    - Called when the ability finishes.
-    - Can also be triggered by cancelation or interruption.
-6. **`CancelAbility` / `InterruptAbility`**
-    - Ends the ability prematurely under specific conditions.
-    - Always call parent functions when overriding to preserve internal state cleanup.
+3. **TryActivateAbility**:
+    - **Purpose**: Attempts to activate the ability via `BP_AdvancedAbilitySystemComponent`.
+    - **Usage**: Call from the component to trigger the ability if conditions are met.
+    - **Example**:
+```blueprint
+Enhanced Input Action (IA_Attack) -> Get BP_AdvancedAbilitySystemComponent -> Try Activate Abilities By Tag (Tags: Ability.Attack)
+```
 
----
+4. **End Ability**:
+    - **Purpose**: Terminates the ability and performs cleanup.
+    - **Usage**: Call to end execution; override with parent call for custom cleanup.
+    - **Example**:
+```blueprint
+End Ability -> Call Parent: End Ability -> Reset Variables
+```
 
 ## Key Properties
 
-|Property|Purpose|
-|---|---|
-|`Activation Required Tags`|Tags the owner must have to activate the ability.|
-|`Activation Blocked Tags`|Tags that, if present on the owner, prevent activation.|
-|`Target Required Tags`|Tags required on the target to activate the ability.|
-|`Target Blocked Tags`|Tags that prevent activation if present on the target.|
-|`Activation Owned Tags`|Tags temporarily granted to the ability's owner while the ability is active.|
-|`Cancel Abilities With Tag`|Abilities with these tags are canceled when this ability is activated.|
-|`Block Abilities With Tag`|Prevents activation of any other abilities with these tags while this one is active.|
-|`bCanBeCanceled`|Whether this ability is cancelable. Defaults to true.|
-|`bAutoEndAbility`|Whether the ability should automatically end after `ActivateAbility`.|
-
----
+| Property Name               | Purpose                                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `Cost Gameplay Effect`      | Specifies a `BP_GameplayEffect` to apply costs (e.g., reduce `Attribute.Stamina`) when the ability is committed. |
+| `CooldownTime`              | Sets the cooldown duration in seconds, activated by `Start Cooldown`.                                            |
+| `Cooldown Loop Interval`    | Defines the frequency (in seconds) of cooldown timer updates.                                                    |
+| `Cancel Abilities With Tag` | Cancels active abilities with matching tags during execution.                                                    |
+| `Block Abilities With Tag`  | Prevents other abilities with matching tags from activating during execution.                                    |
+| `Activation Owned Tags`     | Grants these tags to the owning actor during execution for state-based logic.                                    |
+| `Activation Required Tags`  | Requires the activating actor/component to have all these tags to activate.                                      |
+| `Activation Blocked Tags`   | Prevents activation if the activating actor/component has any of these tags.                                     |
 
 ## Key Concepts
 
-### Instancing Policy
+### Modular Ability Logic
 
-Defines how instances of the ability are created:
-- **Instanced Per Execution**: Spawns a new instance each time the ability activates. Best for abilities with short lifespans.
-- **Instanced Per Actor**: A single instance is shared per actor. Ideal for reusable abilities with state tracking.
-- **Non-Instanced**: Uses the class default object (CDO). Blueprint scripting is not supported.
+The `BP_AdvancedGameplayAbility` encapsulates ability behavior in a single Blueprint, allowing developers to define activation, effects, and cleanup logic. This modularity supports rapid iteration and reuse across different abilities.
 
-### Gameplay Events
+- **Purpose**: Simplifies ability creation and maintenance.
+- **Usage**: Override `ActivateAbility` and `OnAbilityEnd` in child Blueprints for custom logic.
+- **Benefit**: Enables designers to script complex mechanics without modifying core systems.
 
-The Advanced Abilities Framework includes a simple but powerful event system for triggering logic within abilities via gameplay events. This is distinct from Epic's GAS event system and is designed specifically for Blueprint-based workflows.
+### Tag-Based Control
 
-- Each ability has a property called `GameplayEventTags`.
-    - This is an array of tags that define which events this ability will respond to.
-    - You must assign the appropriate tags to this array for the ability to listen for those events.
-- To send an event to an active ability, use the `SendEventToAbility` function on the Ability System Component.
+Abilities use `Gameplay Tags` to manage activation, cancellation, and blocking, providing precise control over ability interactions. Tags ensure abilities only execute under specific conditions, preventing conflicts.
 
-```blueprint
-SendEventToAbility:
-→ Target: Ability System Component
-→ Event Tag: Event.Ability.YourCustomTag
-→ Instigator, Target, Optional Objects: (Optional contextual data)
-```
+- **Purpose**: Enforces state-driven ability execution.
+- **Usage**: Configure `Activation Required Tags`, `Block Abilities With Tag`, etc., in the Details panel.
+- **Benefit**: Reduces errors and enhances gameplay consistency.
 
-- Inside the `BP_AdvancedGameplayAbility`, override the **`EventReceived`** function to define how the ability responds when the event is received.
+### Cooldown Management
 
-```blueprint
-EventReceived(EventTag, Instigator, Target, Optional Object):
-→ Branch on Event Tag
-→ Play FX, Apply Effect, or Trigger Ability Logic
-```
+The `BP_AdvancedGameplayAbility` supports optional cooldowns, activated by calling `Start Cooldown`. This allows designers to balance ability usage with configurable durations and update intervals.
 
-This system is ideal for decoupling gameplay logic and triggering reactions to world events, interactions, or status effects across multiple gameplay abilities.
+- **Purpose**: Limits ability frequency for gameplay balance.
+- **Usage**: Set `CooldownTime` and call `Start Cooldown` in `ActivateAbility`.
+- **Benefit**: Provides designer-friendly control over ability pacing.
 
-### Triggering with Gameplay Events
+## Best Practices
 
-Abilities can be activated by sending gameplay events:
-
-```blueprint
-SendGameplayEventToActor:
-- Target: Actor with Ability System Component
-- Event Tag: Event.Ability.Trigger
-- Payload: Gameplay Event Data
-```
-
-Internally, this triggers `ActivateAbilityFromEvent`, which receives the `FGameplayEventData` struct as input.
-
-### Committing the Ability
-
-Call `CommitAbility` inside `ActivateAbility` to:
-
-- Apply cost effects (e.g., reduce mana).
-- Apply cooldowns.
-- Register activation tags.
-
-Always follow with `EndAbility` if the ability has completed.
-
-### Ending & Canceling
-
-- `EndAbility` marks the ability as finished and clears activation tags.
-- `CancelAbility` ends it due to external factors (e.g., stunned, interrupted).
-
-Best practice:
-
-```blueprint
-Override EndAbility → Call Parent → Clear visuals/sounds
-Override CancelAbility → Call Parent → Optional fail FX
-```
-
----
-
-This documentation page serves as a reference for understanding and extending the `BP_AdvancedGameplayAbility` class in the Advanced Abilities Framework. For example implementations, refer to built-in classes like `GA_SwordAttack`, `GA_Dash`, or `GA_HeavyStrike`.
+- **Workflows**:
+    - Use the `GA_` naming convention for child Blueprints (e.g., `GA_Fireball`) to maintain clarity.
+    - Test abilities with default effects (e.g., `GE_DamageEffect`) before adding custom logic.
+- **Pitfalls to Avoid**:
+    - Always call parent functions in `End Ability`, `Cancel Ability`, and `Interrupt Ability` overrides to ensure proper cleanup.
+    - Don’t skip setting `Cost Gameplay Effect` if the ability consumes resources to avoid unbalanced gameplay.
+- **Performance Considerations**:
+    - Minimize complex logic in `ActivateAbility` to reduce execution overhead.
+    - Use `Cooldown Loop Interval` sparingly (e.g., >0.5s) to avoid frequent ticks.
+    - Cache `BP_AdvancedAbilitySystemComponent` references in Blueprints to optimize performance.
