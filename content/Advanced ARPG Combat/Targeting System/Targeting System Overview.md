@@ -1,3 +1,8 @@
+---
+aliases:
+  - Targeting System
+---
+
 The **Advanced Targeting System** is a modular Blueprint-based targeting solution designed for Unreal Engine 5 projects. It enables precise and responsive lock-on targeting behavior, similar to mechanics found in action RPGs and souls-like titles. Integrated with the Advanced ARPG Combat system, this system provides smooth camera targeting, dynamic target switching, and customizable target validation.
 
 This system addresses the need for responsive target acquisition, context-aware target selection, and robust behavior across varying combat scenarios. It is intended for developers working on action games, RPGs, or any project requiring directional targeting.

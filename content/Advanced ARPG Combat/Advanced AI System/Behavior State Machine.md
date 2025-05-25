@@ -1,3 +1,8 @@
+---
+aliases:
+  - SM_Behavior
+---
+
 The `SM_Behavior` is a UObject-derived Blueprint class within the `Combat AI Behavior System` for Unreal Engine 5, extending `BP_StateMachine` to define and manage AI behavior states for enemies in Action RPGs. It serves as the base class for state machines like `SM_Humanoid_CombatBehavior`, enabling developers to control AI state transitions and behaviors, such as patrolling, attacking, or retreating. The class addresses the need for flexible, modular AI behavior management, integrating with `BP_BehaviorManagerComponent` to drive complex enemy interactions in the `Advanced ARPG Combat` framework.
 
 ## Basic Usage

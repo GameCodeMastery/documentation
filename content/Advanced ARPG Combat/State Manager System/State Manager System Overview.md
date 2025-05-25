@@ -10,9 +10,9 @@ The `State Manager System` revolves around the `BP_StateManagerComponent`, which
 
 - **Key Blueprint Classes**:
     
-    - `BP_StateManagerComponent`: Core component that manages an actor’s states, tracks the active state, and facilitates transitions. It handles state entry, exit, and event dispatching.
-    - `BP_BaseState`: UObject-derived Blueprint defining state behavior, including entry (`EnterState`), exit (`EndState`), and transition logic (`Run State Machine`).
-    - `BP_StateMachine`: UObject-derived Blueprint extending `BP_BaseState`, acting as a centralized FSM to manage state transitions in response to events or inputs.
+    - **BP_StateManagerComponent**: Core component that manages an actor’s states, tracks the active state, and facilitates transitions. It handles state entry, exit, and event dispatching.
+    - **[[State Class|BP_BaseState]]**: UObject-derived Blueprint defining state behavior, including entry (`EnterState`), exit (`EndState`), and transition logic (`Run State Machine`).
+    - **[[State Machine|BP_StateMachine]]**: UObject-derived Blueprint extending `BP_BaseState`, acting as a centralized FSM to manage state transitions in response to events or inputs.
     - `Input Atom`: Data Asset representing an indivisible unit of input data, used to trigger state transitions or events in the FSM.
 - **Data Flow**:
     

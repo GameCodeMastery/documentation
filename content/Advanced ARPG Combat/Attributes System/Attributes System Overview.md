@@ -9,12 +9,12 @@ The `Advanced Attributes System` is a flexible and modular system within the Adv
 The `Advanced Attributes System` is organized around a central actor component that manages attributes and their interactions. Data flows from the `BP_AttributesComponent` to structs, extended attributes, and UI widgets, with curve-based logic for associated attributes. The system is entirely Blueprint-based, requiring no C++ for core functionality.
 
 - **Blueprints**:
-    - `BP_AttributesComponent`: Core component attached to actors, managing an array of `F_Attribute` structs and `ExtendedAttributes`.
-    - `BP_BaseExtendedAttribute`: Base class for extended attribute functionality, such as regeneration or custom logic.
-    - `BP_BaseRegeneratableAttribute`: Derived from `BP_BaseExtendedAttribute`, handles regeneratable attributes like stamina.
-    - `WB_AttributeProgressBar`: Widget for displaying attribute values on the HUD with progress bars.
+    - **BP_AttributesComponent**: Core component attached to actors, managing an array of `F_Attribute` structs and `ExtendedAttributes`.
+    - **[[Extended Attributes|BP_BaseExtendedAttribute]]**: Base class for extended attribute functionality, such as regeneration or custom logic.
+    - **BP_BaseRegeneratableAttribute**: Derived from `BP_BaseExtendedAttribute`, handles regeneratable attributes like stamina.
+    - **[[Attribute Progress Bar Widget|WB_AttributeProgressBar]]**: Widget for displaying attribute values on the HUD with progress bars.
 - **Structs**:
-    - `F_Attribute`: Stores attribute data, including `AttributeTag`, current value, base value, and `AssociatedAttributes` map.
+    - **[[Attribute|F_Attribute]]**: Stores attribute data, including `AttributeTag`, current value, base value, and **[[Associated Attributes]]** map.
 
 ```mermaid
 classDiagram

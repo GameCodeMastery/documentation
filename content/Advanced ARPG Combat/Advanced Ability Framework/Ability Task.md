@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_AbilityTask
+---
+
 The `BP_AbilityTask` class in the `Advanced Abilities Framework` is a specialized actor Blueprint designed to handle asynchronous or tick-based logic within `Gameplay Abilities`. It enables developers to offload complex or time-dependent tasks, such as delays, animations, or continuous checks, from abilities, enhancing modularity and flexibility in Action RPGs. This class addresses the need for reusable, self-contained logic that integrates seamlessly with the `BP_AdvancedAbilitySystemComponent`, supporting dynamic gameplay mechanics without cluttering ability Blueprints.
 
 ## Basic Usage
@@ -7,26 +12,17 @@ The `BP_AbilityTask` is used by creating child Blueprints and activating them wi
 1. **ActivateTask**:
     - **Purpose**: Executes the task’s core logic when activated.
     - **Usage**: Override in a child Blueprint to define custom functionality (e.g., delay, tick-based checks).
-    - **Example**:
-```blueprint
-ActivateTask -> Delay (2s) -> Apply Gameplay Effect By Class (Class: GE_DamageEffect)
-```
+    - **Example**: In a child Blueprint like `BP_DelayedStrike`, override `ActivateTask` to implement a 2-second delay before triggering a damage effect.
 
 2. **EndTask**:
     - **Purpose**: Terminates the task and performs cleanup.
     - **Usage**: Call in the child Blueprint to end the task after completion or on interruption.
-    - **Example**:
-```blueprint
-ActivateTask -> Delay (2s) -> EndTask
- ```
+    - **Example**: In `BP_DelayedStrike`, call `EndTask` after the delay completes to clean up and destroy the task actor.
 
 3. **Spawning a Task**:
     - **Purpose**: Spawns and activates a task from `BP_AdvancedAbilitySystemComponent`.
     - **Usage**: Call within a `BP_AdvancedGameplayAbility` to start the task.
-    - **Example**:
-```blueprint
-ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Activate Task By Class (Class: BP_DelayedStrike, bAutoCreateTask: True)
-```
+    - **Example**: In a `BP_AdvancedGameplayAbility`, use `Activate Task By Class` with `bAutoCreateTask` enabled to spawn and start `BP_DelayedStrike` when the ability is activated.
 
 ## Key Properties
 

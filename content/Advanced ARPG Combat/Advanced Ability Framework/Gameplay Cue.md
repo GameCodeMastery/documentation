@@ -1,3 +1,8 @@
+---
+aliases:
+  - Gameplay  Cue Data Asset
+  - BP_GameplayCueDataAsset
+---
 The `BP_GameplayCue` class in the `Advanced Abilities Framework` is a Blueprint Data Asset designed to manage simple visual and audio effects, such as sparks, blood particles, or hit sounds, without spawning actors. It enables developers to trigger lightweight effects tied to gameplay events, enhancing player feedback in Action RPGs. This class addresses the need for efficient, non-persistent effect handling, integrating with the `BP_AdvancedAbilitySystemComponent` to provide quick, designer-friendly visual and audio cues.
 
 ## Basic Usage
@@ -7,18 +12,10 @@ The `BP_GameplayCue` is used by creating child Data Assets and triggering them v
 1. **OnExecute**:
     - **Purpose**: Executes the cue’s visual or audio effect logic.
     - **Usage**: Override in a child Data Asset to define simple effect behavior (e.g., spawn particles, play sounds).
-    - **Example**:
-```blueprint
-OnExecute -> Play Sound At Location (Sound: HitSound) -> Spawn Emitter At Location (Emitter: Sparks)
-```
 
 2. **Play Gameplay Cue**:
     - **Purpose**: Triggers the cue from `BP_AdvancedAbilitySystemComponent`.
     - **Usage**: Call within an ability or effect to activate the cue.
-    - **Example**:
-```blueprint
-ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Play Gameplay Cue (Gameplay Cue: BP_HitSound)
-```
 
 ## Key Properties
 

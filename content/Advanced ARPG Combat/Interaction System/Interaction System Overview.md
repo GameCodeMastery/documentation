@@ -1,3 +1,8 @@
+---
+aliases:
+  - Interaction System
+---
+
 The **Advanced Interaction System** is a modular Blueprint-based framework included in the Advanced ARPG Combat system. It enables dynamic interactions between player-controlled characters (interactors) and interactable world objects (e.g., chests, NPCs, bonfires).
 
 This system solves the common need for a reusable, scalable interaction framework that can power a wide range of gameplay mechanics—from simple prompts to complex context-sensitive behaviors. It is especially useful for developers creating action RPGs, adventure games, or any genre requiring interaction with world elements.

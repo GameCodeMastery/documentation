@@ -1,8 +1,8 @@
 ---
 aliases:
   - Combat AI
+  - Advanced AI System
 ---
-
 The `Combat AI Behavior System`, part of the `Advanced ARPG Combat` framework in Unreal Engine 5, provides a modular and flexible solution for creating dynamic enemy AI in Action RPGs. It enables developers to craft rich combat behaviors for enemies, combining Blueprint-based finite state machines (FSMs) with Behavior Trees for precise control and extensibility. The system addresses the need for customizable, scalable AI behaviors, supporting scenarios from simple enemies to complex boss encounters. Targeted at game developers and designers working on RPGs, its standout features include pre-configured AI behaviors, extensive customization through data assets, and seamless integration with systems like `State Manager` and `Advanced Abilities`.
 
 ## System Architecture
@@ -10,14 +10,14 @@ The `Combat AI Behavior System`, part of the `Advanced ARPG Combat` framework in
 The `Combat AI Behavior System` leverages Blueprints to manage enemy AI behaviors, integrating FSMs via the `State Manager System` with Behavior Trees for task execution. No C++ classes are required, ensuring accessibility. The system uses `Gameplay Tags` for identification, `Enemy Info` data assets for configuration, and components for modular functionality, enabling dynamic AI behavior driven by perception, abilities, and patrol systems.
 
 - **Key Blueprint Classes**:
-    - `BP_BaseEnemy`: Base character class that initializes AI components, manages health bars, and handles ragdoll functionality.
-    - `BP_BaseAIController`: Controls AI perception, target selection, and Behavior Tree data flow, driving AI decision-making.
-    - `BP_BehaviorManagerComponent`: Extends `BP_StateManagerComponent` to manage AI behavior states, interfacing with FSMs and Behavior Trees.
-    - `SM_Behavior`: Base state machine class (derived from `BP_StateMachine`) for defining AI behavior transitions and logic.
-    - `BP_EnemyInfo`: Data Asset for configuring AI properties, including abilities, combat styles, and attributes.
-    - `BP_PatrolComponent`: Manages patrol logic, tracking position along a `BP_PatrolPath`.
-    - `BP_PatrolPath`: Actor defining patrol points for AI navigation.
-    - `BP_EnemySpawner`: Actor for spawning enemies, configurable with `BP_EnemyInfo`.
+    - **BP_BaseEnemy**: Base character class that initializes AI components, manages health bars, and handles ragdoll functionality.
+    - **BP_BaseAIController**: Controls AI perception, target selection, and Behavior Tree data flow, driving AI decision-making.
+    - **BP_BehaviorManagerComponent**: Extends `BP_StateManagerComponent` to manage AI behavior states, interfacing with FSMs and Behavior Trees.
+    - **[[Behavior State Machine|SM_Behavior]]**: Base state machine class (derived from `BP_StateMachine`) for defining AI behavior transitions and logic.
+    - **[[Enemy Info Data Asset|BP_EnemyInfo]]**: Data Asset for configuring AI properties, including abilities, combat styles, and attributes.
+    - **BP_PatrolComponent**: Manages patrol logic, tracking position along a `BP_PatrolPath`.
+    - **BP_PatrolPath**: Actor defining patrol points for AI navigation.
+    - **BP_EnemySpawner**: Actor for spawning enemies, configurable with `BP_EnemyInfo`.
 
 - **Data Flow**:
     - `BP_BaseEnemy` initializes components like `BP_BehaviorManagerComponent` and `BP_PatrolComponent`, using `BP_EnemyInfo` for setup.

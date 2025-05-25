@@ -1,6 +1,7 @@
 ---
 aliases:
   - Gameplay Abilities
+  - BP_AdvancedGameplayAbility
 ---
 The `BP_AdvancedGameplayAbility` class in the `Advanced Abilities Framework` is a Blueprint class that defines in-game abilities for Action RPGs, such as attacks, jumps, or spells. It enables developers to create modular, customizable gameplay mechanics, specifying activation conditions, costs, cooldowns, and effects. This class addresses the need for a flexible, data-driven ability system, allowing designers to script complex behaviors without C++ coding, while integrating seamlessly with the `BP_AdvancedAbilitySystemComponent` for execution and state management.
 
@@ -20,34 +21,18 @@ The `BP_AdvancedGameplayAbility` is used by creating child Blueprints and granti
 1. **CanActivateAbility**:
     - **Purpose**: Checks if the ability can be activated based on tags and costs.
     - **Usage**: Automatically called by `TryActivateAbility`; override for custom conditions.
-    - **Example**:
-```blueprint
-CanActivateAbility -> Check Attribute.Stamina >= 10 -> Return True
-```
 
 2. **ActivateAbility**:
     - **Purpose**: Executes the ability’s core logic.
     - **Usage**: Override in a child Blueprint to define custom behavior; call `CommitAbility` to apply costs.
-    - **Example**:
-```blueprint
-ActivateAbility -> Call CommitAbility -> Spawn Actor (Class: BP_Projectile) -> Start Cooldown
-```
 
 3. **TryActivateAbility**:
     - **Purpose**: Attempts to activate the ability via `BP_AdvancedAbilitySystemComponent`.
     - **Usage**: Call from the component to trigger the ability if conditions are met.
-    - **Example**:
-```blueprint
-Enhanced Input Action (IA_Attack) -> Get BP_AdvancedAbilitySystemComponent -> Try Activate Abilities By Tag (Tags: Ability.Attack)
-```
 
 4. **End Ability**:
     - **Purpose**: Terminates the ability and performs cleanup.
     - **Usage**: Call to end execution; override with parent call for custom cleanup.
-    - **Example**:
-```blueprint
-End Ability -> Call Parent: End Ability -> Reset Variables
-```
 
 ## Key Properties
 

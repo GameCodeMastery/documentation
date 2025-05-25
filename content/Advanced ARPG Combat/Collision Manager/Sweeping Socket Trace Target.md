@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_SweepingSocketTraceTarget
+---
+
 The `BP_SweepingSocketTraceTarget` class in the `Collision Manager` system is a Blueprint class derived from `BP_TraceTarget`, designed to handle precise collision tracing for sweeping melee attacks, such as weapon swings or fist strikes, in Action RPGs. It enables developers to create accurate hit detection by tracing along a mesh’s sockets, ensuring collisions align with attack animations. This class addresses the need for realistic, mesh-based collision detection, integrating with the `BP_CollisionComponent` to support dynamic combat mechanics.
 
 ## Basic Usage
@@ -7,42 +12,22 @@ The `BP_SweepingSocketTraceTarget` is used by adding it to a `BP_CollisionCompon
 1. **ActivateCollision**:
     - **Purpose**: Starts the tick-based collision trace along the specified mesh sockets.
     - **Usage**: Call via `ActivateCollisionByTag` on `BP_CollisionComponent`, often triggered by `ANS_CollisionTrace`.
-    - **Example**:
-```blueprint
-Animation Blueprint -> Play Anim_SwordSwing -> ANS_CollisionTrace (Collision Target Tag: Collision.SwordTrace) -> ActivateCollisionByTag (GameplayTag: Collision.SwordTrace)
- ```
 
 2. **DeactivateCollision**:
     - **Purpose**: Stops the collision trace and cleans up.
     - **Usage**: Call via `DeactivateCollisionByTag` or automatically via `ANS_CollisionTrace` when the animation ends.
-    - **Example**:
-```blueprint
-EndAbility -> Get Component By Class (Class: BP_CollisionComponent) -> DeactivateCollisionByTag (GameplayTag: Collision.SwordTrace)
-```
 
 3. **CollisionTrace**:
     - **Purpose**: Performs the tick-based trace along the mesh’s socket paths to detect hits.
     - **Usage**: Override in a child Blueprint to customize trace behavior (e.g., adjust trace shape or path).
-    - **Example**:
-```blueprint
- CollisionTrace -> Multi Line Trace By Channel (TraceChannel: Weapon, Start: Socket BladeStart, End: Socket BladeEnd) -> Process Hits
- ```
 
 4. **OnHit**:
     - **Purpose**: Executes logic when the trace hits a valid target.
     - **Usage**: Override to apply `Gameplay Effects` or trigger events on hit.
-    - **Example**:
-```blueprint
- OnHit -> Apply Gameplay Effect By Class (Class: GE_DamageEffect, Target: Hit Actor)
-```
 
 5. **SetCollisionProperties**:
     - **Purpose**: Configures the mesh and sockets for tracing.
     - **Usage**: Call after adding the target type to set the weapon mesh and socket names.
-    - **Example**:
-```blueprint
-AddCollisionTargetType (TargetTypeClass: BP_SweepingSocketTraceTarget) -> SetCollisionProperties (Mesh: SkeletalMeshComponent, Sockets: BladeStart, BladeEnd)
- ```
 
 
 ## Key Properties

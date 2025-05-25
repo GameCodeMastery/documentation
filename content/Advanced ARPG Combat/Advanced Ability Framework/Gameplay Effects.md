@@ -1,3 +1,8 @@
+---
+aliases:
+  - Gameplay Effect
+  - BP_GameplayEffect
+---
 The `BP_GameplayEffect` class in the `Advanced Abilities Framework` is a Blueprint class designed to modify attributes in Action RPGs, supporting instant, timed, or periodic changes such as damage, buffs, or debuffs. It enables developers and designers to create data-driven effects that alter gameplay states, like reducing health or boosting speed, while integrating with the `BP_AdvancedAbilitySystemComponent`. This class addresses the need for a flexible, modular system to manage attribute changes and associated visual/audio cues, streamlining dynamic gameplay mechanics.
 
 ## Basic Usage
@@ -7,34 +12,22 @@ The `BP_GameplayEffect` is used by creating child Blueprints and applying them v
 1. **Apply Effect**:
     - **Purpose**: Applies the effect’s attribute changes and triggers associated cues.
     - **Usage**: Override in a child Blueprint for custom application logic.
-    - **Example**:
-```blueprint
-Apply Effect -> Spawn Emitter At Location (Emitter: PoisonParticles)
-```
+
 
 2. **Remove Effect**:
     - **Purpose**: Removes the effect and performs cleanup.
     - **Usage**: Override for custom removal logic; called automatically for timed effects.
-    - **Example**:
-```blueprint
-Remove Effect -> Stop Emitter
-```
+
 
 3. **Can Apply Effect**:
     - **Purpose**: Checks if the effect can be applied based on tags and conditions.
     - **Usage**: Override to add custom validation logic.
-    - **Example**:
-```blueprint
-Can Apply Effect -> Check Attribute.Health > 0 -> Return True
- ```
+
 
 4. **Apply Gameplay Effect By Class**:
     - **Purpose**: Applies the effect from `BP_AdvancedAbilitySystemComponent`.
     - **Usage**: Call within an ability to trigger the effect.
-    - **Example**:
-```blueprint
-ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Apply Gameplay Effect By Class (Class: GE_DamageEffect)
-```
+
 
 ## Key Properties
 

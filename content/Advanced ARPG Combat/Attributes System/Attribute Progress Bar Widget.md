@@ -1,3 +1,8 @@
+---
+aliases:
+  - WB_AttributeProgressBar
+---
+
 The `WB_AttributeProgressBar` widget in the `Advanced Attributes System` provides a customizable progress bar for displaying attribute values, such as health or stamina, on the HUD in Unreal Engine 5 projects. It enables developers to visually represent attribute data with dynamic updates, optional lerp animations, and size scaling based on the max attribute value, enhancing player feedback in Action RPGs. This widget addresses the need for a plug-and-play solution to integrate attribute visualization, ensuring seamless connection with the `BP_AttributesComponent` for real-time updates and souls-like visual feedback for player progression.
 
 ## Basic Usage

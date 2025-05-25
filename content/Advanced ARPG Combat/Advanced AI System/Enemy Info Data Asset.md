@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_EnemyInfo
+---
+
 The `BP_EnemyInfo` is a Data Asset within the `Combat AI Behavior System` for Unreal Engine 5, designed to centralize configuration data for enemy AI in Action RPGs. It enables developers to define AI attributes, behaviors, abilities, and combat styles in a single, reusable asset, streamlining enemy setup and customization. The asset addresses the need for modular, async-loaded AI configurations, integrating with `BP_BaseEnemy`, `BP_BehaviorManagerComponent`, and other system components in the `Advanced ARPG Combat` framework to drive dynamic enemy behavior.
 
 ![[EnemyInfoDataAsset.png]]

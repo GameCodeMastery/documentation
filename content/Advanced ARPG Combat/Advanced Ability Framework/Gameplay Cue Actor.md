@@ -1,3 +1,7 @@
+---
+aliases:
+  - BP_GameplayCueActor
+---
 
 The `BP_GameplayCueActor` class in the `Advanced Abilities Framework` is a Blueprint actor designed to manage complex visual and audio effects, such as explosions or persistent particle systems, within the ability system. It enables developers to spawn, control, and destroy effects tied to gameplay events, enhancing player feedback in Action RPGs. This class addresses the need for dynamic, stateful, or stateless effect handling, integrating with the `BP_AdvancedAbilitySystemComponent` to trigger effects from abilities or gameplay effects.
 
@@ -8,26 +12,17 @@ The `BP_GameplayCueActor` is used by creating child Blueprints and triggering th
 1. **OnExecute**:
     - **Purpose**: Executes the cue’s visual or audio effect logic.
     - **Usage**: Override in a child Blueprint to define custom effect behavior; manually destroy the actor if needed.
-    - **Example**:
-```blueprint
-OnExecute -> Spawn Emitter At Location (Emitter: ExplosionParticles) -> Delay (2s) -> Destroy Actor
-```
+
 
 2. **OnRemove**:
     - **Purpose**: Handles cleanup when the cue is removed.
     - **Usage**: Override to perform additional cleanup; call `Destroy Actor` if required.
-    - **Example**:
-```blueprint
-OnRemove -> Stop Emitter -> Destroy Actor
- ```
+
 
 3. **Execute Gameplay Cue Actor**:
     - **Purpose**: Spawns and triggers the cue actor from `BP_AdvancedAbilitySystemComponent`.
     - **Usage**: Call within an ability or effect to activate the cue.
-    - **Example**:
-```blueprint
- ActivateAbility -> Get BP_AdvancedAbilitySystemComponent -> Execute Gameplay Cue Actor (Class: BP_ExplosionCue)
- ```
+
 
 ## Key Properties
 

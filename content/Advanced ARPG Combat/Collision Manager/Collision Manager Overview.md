@@ -10,11 +10,11 @@ The `Collision Manager` is organized around the `BP_CollisionComponent`, which s
 
 - **Key Blueprint Classes**:
     
-    - `BP_CollisionComponent`: Manages collision target types for an actor, enabling hit box creation and target searches. It initializes default target types, activates/deactivates collisions, and handles target queries.
-    - `BP_TargetType`: Base class for collision handler objects, used for custom or one-off target searches, particularly for abilities requiring specific targets.
-    - `BP_TraceTarget`: Base class for trace-based collision handlers, supporting continuous tick-based tracing until deactivated, ideal for persistent hit detection.
-    - `BP_SweepingSocketTraceTarget`: Specialized trace target for melee attacks, using mesh sockets to define precise collision paths for weapon swings.
-    - `ANS_CollisionTrace`: Animation Notify State that activates/deactivates trace collisions during specific animation frames, ensuring precise timing for melee hit boxes.
+    - **BP_CollisionComponent**: Manages collision target types for an actor, enabling hit box creation and target searches. It initializes default target types, activates/deactivates collisions, and handles target queries.
+    - **[[Target Type Class|BP_TargetType]]**: Base class for collision handler objects, used for custom or one-off target searches, particularly for abilities requiring specific targets.
+    - **[[Collision Trace Target|BP_TraceTarget]]**: Base class for trace-based collision handlers, supporting continuous tick-based tracing until deactivated, ideal for persistent hit detection.
+    - **[[Sweeping Socket Trace Target|BP_SweepingSocketTraceTarget]]**: Specialized trace target for melee attacks, using mesh sockets to define precise collision paths for weapon swings.
+    - **ANS_CollisionTrace**: Animation Notify State that activates/deactivates trace collisions during specific animation frames, ensuring precise timing for melee hit boxes.
 - **Data Flow**:
     
     - Actors (e.g., characters, weapons) possess a `BP_CollisionComponent`, initialized on `BeginPlay` with default target types via `DefaultTargetTypeMap` or `DefaultTargetTypes`.

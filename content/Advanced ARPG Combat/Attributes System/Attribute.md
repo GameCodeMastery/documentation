@@ -1,3 +1,8 @@
+---
+aliases:
+  - F_Attribute
+---
+
 The `F_Attribute` struct in the `Advanced Attributes System` is the core data structure for storing and managing gameplay-related floating-point attribute values, such as health, stamina, or experience points, within the `BP_AttributesComponent`. It enables developers to define and track actor traits efficiently, supporting dynamic modifications and relationships like souls-like leveling. The struct addresses the need for a flexible, standardized way to handle attribute data in Action RPGs, ensuring seamless integration with other system features like HUD displays and associated attributes.
 
 ## Basic Usage
@@ -7,26 +12,14 @@ The `F_Attribute` struct is managed within the `Attributes` array of the `BP_Att
 1. **SetCurrentAttributeValue**:
     - **Purpose**: Sets the current value of an `F_Attribute` for gameplay logic.
     - **Usage**: Call `SetCurrentAttributeValue` on `BP_AttributesComponent`, specifying the `AttributeTag` and value.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> SetCurrentAttributeValue (AttributeTag: Attribute.Health, Value: 75)
-        ```
 
 2. **GetCurrentAttributeValue**:
     - **Purpose**: Retrieves the current value of an `F_Attribute` for use in gameplay or UI.
     - **Usage**: Use `GetCurrentAttributeValue` on `BP_AttributesComponent` with the `AttributeTag`.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> GetCurrentAttributeValue (AttributeTag: Attribute.Health) -> Print String
-        ```
 
 3. **ModifyAttribute**:
     - **Purpose**: Dynamically adjusts the current value of an `F_Attribute` during gameplay.
     - **Usage**: Call `ModifyAttribute` on `BP_AttributesComponent` to add or subtract a value.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> ModifyAttribute (AttributeTag: Attribute.Stamina, Value: -20)
-        ```
 
 ## Key Properties
 

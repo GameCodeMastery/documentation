@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_StateMachine
+---
+
 The `BP_StateMachine` is a UObject-derived Blueprint class within the `State Manager System` for Unreal Engine 5, extending `BP_BaseState` to serve as a centralized finite state machine (FSM) for managing state transitions in Action RPGs. It enables developers to define complex transition logic between states for actors, such as characters or AI, in response to events or inputs. The class addresses the need for modular, scalable state management, particularly for advanced AI behaviors or dynamic player states, ensuring seamless integration with the `BP_StateManagerComponent`.
 
 ## Basic Usage

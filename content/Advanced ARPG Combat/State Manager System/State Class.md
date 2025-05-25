@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_BaseState
+---
+
 The `BP_BaseState` is a UObject-derived Blueprint class within the `State Manager System` for Unreal Engine 5, designed to define and manage individual states for actors, such as characters or AI, in Action RPGs. It enables developers to specify behavior when entering or exiting a state and supports transitions between states, providing a modular framework for state-driven logic. The class addresses the need for reusable, customizable state behaviors, simplifying the creation of states like idle, attacking, or stunned, and ensuring seamless integration with the `BP_StateManagerComponent`.
 
 ## Basic Usage

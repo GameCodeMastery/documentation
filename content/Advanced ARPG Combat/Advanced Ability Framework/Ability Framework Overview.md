@@ -3,7 +3,6 @@ aliases:
   - Advanced Ability Framework
   - Advanced Abilities Framework
 ---
-
 The `Advanced Abilities Framework` is a flexible, Blueprint-based system for Unreal Engine 5 projects, designed to create stateful gameplay mechanics for Action RPGs. It enables developers to build complex abilities, effects, and visual cues using `Gameplay Tags`, `Gameplay Abilities`, and `Gameplay Effects`. The framework addresses the need for modular, data-driven ability systems, allowing rapid iteration and customization without relying on Epic’s Gameplay Ability System. It targets game developers and designers building RPGs or similar genres, offering standout features like extensible ability logic, dynamic attribute modification, and a robust gameplay cue system for visual and audio feedback.
 
 ## System Architecture
@@ -12,14 +11,14 @@ The `Advanced Abilities Framework` is organized around a central `BP_AdvancedAbi
 
 - **Key Blueprint Classes**:
     
-    - `BP_AdvancedAbilitySystemComponent`: The core manager for abilities, effects, and cues on an actor. It initializes the system, grants abilities, and handles activation and effect application.
-    - `BP_AdvancedGameplayAbility`: Defines individual abilities (e.g., `GA_JumpAbility`), including activation conditions, costs, and custom logic.
-    - `BP_GameplayEffect`: Manages attribute changes (e.g., `GE_DamageEffect`), supporting instant, timed, or persistent modifications.
-    - `BP_AbilityTask`: Executes specialized tasks (e.g., `BP_DelayedEffectTask`) for abilities requiring tick-based or delayed logic.
-    - `BP_GameplayCueActor`: Spawns and controls complex visual/audio effects (e.g., `BP_ExplosionCue`) with stateful or stateless behavior.
-    - `BP_GameplayCue`: A data asset (e.g., `BP_HitSound`) for simple particle or sound effects without actor spawning.
-    - `BP_ImpactEffect`: A specialized `Gameplay Cue Data Asset` (e.g., `BP_Niagara_ImpactEffect`) for surface-specific impact effects like sparks or blood.
-    - `BP_AbilitySystemInterface`: An interface for pawns to interact with the ability system, providing access to `BP_AdvancedAbilitySystemComponent`.
+    - **BP_AdvancedAbilitySystemComponent**: The core manager for abilities, effects, and cues on an actor. It initializes the system, grants abilities, and handles activation and effect application.
+    - **[[Advanced Gameplay Ability|BP_AdvancedGameplayAbility]]**: Defines individual abilities (e.g., `GA_JumpAbility`), including activation conditions, costs, and custom logic.
+    - **[[Gameplay Effects|BP_GameplayEffect]]**: Manages attribute changes (e.g., `GE_DamageEffect`), supporting instant, timed, or persistent modifications.
+    - **[[Ability Task|BP_AbilityTask]]**: Executes specialized tasks (e.g., `BP_DelayedEffectTask`) for abilities requiring tick-based or delayed logic.
+    - **[[Gameplay Cue Actor|BP_GameplayCueActor]]**: Spawns and controls complex visual/audio effects (e.g., `BP_ExplosionCue`) with stateful or stateless behavior.
+    - **[[Gameplay Cue|BP_GameplayCueDataAsset]]**: A data asset (e.g., `BP_HitSound`) for simple particle or sound effects without actor spawning.
+    - **BP_ImpactEffect**: A specialized `Gameplay Cue Data Asset` (e.g., `BP_Niagara_ImpactEffect`) for surface-specific impact effects like sparks or blood.
+    - **BP_AbilitySystemInterface**: An interface for pawns to interact with the ability system, providing access to `BP_AdvancedAbilitySystemComponent`.
 
 - **Data Flow**:
     - Actors (e.g., players or NPCs) possess a `BP_AdvancedAbilitySystemComponent`, initialized on `BeginPlay`.

@@ -1,3 +1,8 @@
+---
+aliases:
+  - Associated Attribute
+---
+
 The `Associated Attributes` feature in the `Advanced Attributes System` enables attributes to govern the values of other attributes using curve tables, mimicking souls-like leveling systems. It allows developers to create dynamic relationships, such as an `Attribute.Endurance` increasing `Attribute.Stamina`, with designer-friendly curve adjustments. This feature addresses the need for flexible, scalable attribute interactions in Action RPGs, simplifying complex leveling mechanics without requiring manual calculations.
 
 ![[Attribute Curve.png]]
@@ -18,18 +23,10 @@ The `Associated Attributes` feature is managed within the `F_Attribute` struct o
 2. **ModifyAttribute**:
     - **Purpose**: Updates the governing attribute, triggering updates to associated attributes based on the curve.
     - **Usage**: Call `ModifyAttribute` on `BP_AttributesComponent` to change the governing attribute’s value.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> ModifyAttribute (AttributeTag: Attribute.Endurance, Value: 10)
-        ```
 
 3. **GetCurrentAttributeValue**:
     - **Purpose**: Retrieves the updated value of an associated attribute after modification.
     - **Usage**: Use `GetCurrentAttributeValue` to check the governed attribute’s value.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> GetCurrentAttributeValue (AttributeTag: Attribute.Stamina) -> Print String
-        ```
 
 ## Key Properties
 

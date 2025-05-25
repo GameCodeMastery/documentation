@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_TraceTarget
+---
+
 The `BP_TraceTarget` class in the `Collision Manager` system is a Blueprint class derived from `BP_TargetType`, designed to handle continuous, tick-based collision tracing for detecting hits in Action RPGs. It enables developers to create persistent hit detection for abilities or weapons, such as laser beams or ongoing melee sweeps, without requiring manual trace setup. This class addresses the need for dynamic, automated collision detection that searches for targets until deactivated, integrating seamlessly with the `BP_CollisionComponent` to support combat mechanics.
 
 ## Basic Usage
@@ -7,34 +12,18 @@ The `BP_TraceTarget` is used by adding it to a `BP_CollisionComponent` and confi
 1. **ActivateCollision**:
     - **Purpose**: Starts the continuous tick-based collision trace.
     - **Usage**: Call via `ActivateCollisionByTag` on `BP_CollisionComponent` to begin tracing.
-    - **Example**:
-```blueprint
- ActivateAbility -> Get Component By Class (Class: BP_CollisionComponent) -> ActivateCollisionByTag (GameplayTag: Collision.MyTrace)
-  ```
 
 2. **DeactivateCollision**:
     - **Purpose**: Stops the collision trace and performs cleanup.
     - **Usage**: Call via `DeactivateCollisionByTag` to end tracing when no longer needed.
-    - **Example**:
-```blueprint
- EndAbility -> Get Component By Class (Class: BP_CollisionComponent) -> DeactivateCollisionByTag (GameplayTag: Collision.MyTrace)
-```
 
 3. **CollisionTrace**:
     - **Purpose**: Performs the actual tick-based collision tracing to detect hits.
     - **Usage**: Override in a child Blueprint to customize trace logic (e.g., trace shape, channel).
-    - **Example**:
-```blueprint
- CollisionTrace -> Multi Line Trace By Channel (TraceChannel: Weapon, Start: ActorLocation, End: ActorLocation + ForwardVector * 500) -> Process Hits
- ```
 
 4. **OnHit**:
     - **Purpose**: Executes logic when the trace hits a valid target.
     - **Usage**: Override to apply effects or trigger events on hit.
-    - **Example**:
- ```blueprint
- OnHit -> Apply Gameplay Effect By Class (Class: GE_DamageEffect, Target: Hit Actor)
- ```
 
 ## Key Properties
 

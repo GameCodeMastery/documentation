@@ -1,3 +1,8 @@
+---
+aliases:
+  - BP_BaseExtendedAttribute
+---
+
 The `BP_BaseExtendedAttribute` class in the `Advanced Attributes System` provides a framework for adding custom functionality to attributes managed by the `BP_AttributesComponent`. It enables developers to implement project-specific logic, such as triggering events when an attribute reaches a threshold (e.g., death when health is zero) or managing regeneratable attributes. This class addresses the need for extensible attribute behavior in Action RPGs, allowing seamless integration with the attribute system without modifying core functionality.
 
 ## Basic Usage
@@ -8,26 +13,14 @@ The `BP_BaseExtendedAttribute` is used by creating child classes and adding them
     
     - **Purpose**: Responds to changes in the associated attribute’s value.
     - **Usage**: Override in a child Blueprint to implement custom logic when the attribute is modified.
-    - **Example**:
-        ```blueprint
-        OnAttributeValueModified -> If GetCurrentAttributeValue (AttributeTag: Attribute.Health) <= 0 -> Trigger Death Ability
-        ```
 
 2. **OnCurrentAttributeValueUpdated**:
     - **Purpose**: Reacts to updates to the associated attribute’s current value.
     - **Usage**: Override in a child Blueprint to handle value updates (e.g., UI or gameplay effects).
-    - **Example**:
-        ```blueprint
-        OnCurrentAttributeValueUpdated -> Update Custom HUD Element
-        ```
 
 3. **AddExtendedAttribute**:
     - **Purpose**: Adds an instance of `BP_BaseExtendedAttribute` to an actor’s `BP_AttributesComponent`.
     - **Usage**: Call on `BP_AttributesComponent` to register the extended attribute.
-    - **Example**:
-        ```blueprint
-        Get BP_AttributesComponent -> AddExtendedAttribute (ExtendedAttribute: BP_HealthExtendedAttribute)
-        ```
 
 > [!NOTE] Note:
 > Extended Attributes can also be added to default extended attributes array in the actors Attributes Component. If using attributes with Advanced ARPG Combat, the attributes array will need to be edited within the Player Info Data Asset or Enemy Info Data Asset

@@ -1,3 +1,7 @@
+---
+aliases:
+  - BP_TargetType
+---
 
 The `BP_TargetType` class in the `Collision Manager` system is a Blueprint base class designed to handle custom target selection for [[Advanced Gameplay Ability|Gameplay Abilities]] and [[Gameplay Effects]] in Action RPGs. It enables developers to define flexible, one-off target searches or integrate with other systems for combat targeting, such as lock-on or AoE mechanics. This class addresses the need for modular, reusable target selection logic, integrating with the `BP_CollisionComponent` to streamline ability and effect targeting.
 
@@ -8,42 +12,26 @@ The `BP_TargetType` is used by adding it to a `BP_CollisionComponent` and overri
 1. **AddCollisionTargetType**:
     - **Purpose**: Adds the target type to the `BP_CollisionComponent` for use in collision or targeting logic.
     - **Usage**: Call on `BP_CollisionComponent` to register the target type with a `Gameplay Tag`.
-    - **Example**:
- ```blueprint
- Event BeginPlay -> Get Component By Class (Class: BP_CollisionComponent) -> AddCollisionTargetType (TargetTypeTag: Collision.MyTarget, TargetTypeClass: BP_TargetType, PerformingActor: Self)
- ```
+   
 
 2. **GetTarget**:
     - **Purpose**: Returns a single target based on custom selection logic.
     - **Usage**: Override in a child Blueprint to define how a target is selected (e.g., closest enemy).
-    - **Example**:
-```blueprint
-GetTarget -> Line Trace By Channel (TraceChannel: Visibility, Start: ActorLocation, End: ActorLocation + ForwardVector * 1000) -> Return Hit Actor
- ```
+
 
 3. **GetTargets**:
     - **Purpose**: Returns multiple targets based on custom selection logic.
     - **Usage**: Override to return a list of targets (e.g., all enemies in a radius).
-    - **Example**:
-```blueprint
- GetTargets -> Sphere Trace By Channel (TraceChannel: Pawn, Radius: 500, Location: ActorLocation) -> Return Hit Actors
- ```
+
 
 4. **ActivateCollision**:
     - **Purpose**: Executes custom logic associated with the target type, if needed.
     - **Usage**: Override for specific behavior when the target type is activated.
-    - **Example**:
- ```blueprint
-ActivateCollision -> Spawn Emitter At Location (Emitter: TargetIndicator)
- ```
+
 
 5. **OnCollisionTargetAdded**:
     - **Purpose**: Initializes data when the target type is added to the `BP_CollisionComponent`.
     - **Usage**: Override to store references or set up initial state.
-    - **Example**:
-```blueprint
-OnCollisionTargetAdded -> Set Variable (PerformingActorReference: PerformingActor)
-```
 
 ## Key Properties
 
