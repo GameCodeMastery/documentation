@@ -16,16 +16,13 @@ title: FAQ & Troubleshooting
 
 ### Where to get support
 
-Official support is through the **Game Code Mastery Forum**:
+See [[How to Get Support]] for the full support system (forum, email, Discord, Helper role).
 
-- **Help** — support questions and issue reports: [discuss.gamecodemastery.com/c/help/6](https://discuss.gamecodemastery.com/c/help/6)
-- **Announcements** — known issues and update notes: [discuss.gamecodemastery.com/c/announcements/5](https://discuss.gamecodemastery.com/c/announcements/5)
-- **FAQ and Tutorials** — reusable guides and answers: [discuss.gamecodemastery.com/c/faq-and-tutorials/7](https://discuss.gamecodemastery.com/c/faq-and-tutorials/7)
+Quick version:
 
-Read the topic template when you open a new Help thread, and search existing topics first.
-
-> [!TIP]
-> Prefer the forum for product support. Discord is community-oriented; replies there may be fewer and slower.
+- **Fast developer response** → post in [Help](https://discuss.gamecodemastery.com/c/help/6) on the official forum, or email **support@gamecodemastery.com**
+- **Discord** → still ask; the community can jump in, and Helpers flag questions that need a developer response
+- **AARPG troubleshooting** → this page and [[Combat System Setup]] first
 
 ### Before you post
 
@@ -620,4 +617,4 @@ Use the forum **Feedback** category rather than Help, so support threads stay fo
 2. Search [Help](https://discuss.gamecodemastery.com/c/help/6) and [FAQ and Tutorials](https://discuss.gamecodemastery.com/c/faq-and-tutorials/7)  
 3. Open a new **Help** topic with the report template filled in  
 
-Official support: **[discuss.gamecodemastery.com](https://discuss.gamecodemastery.com/)**
+Official support: [[How to Get Support]] — **[discuss.gamecodemastery.com](https://discuss.gamecodemastery.com/)**
