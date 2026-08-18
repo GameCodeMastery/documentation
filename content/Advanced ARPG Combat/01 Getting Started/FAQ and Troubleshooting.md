@@ -16,7 +16,7 @@ title: FAQ & Troubleshooting
 
 ### Where to get support
 
-See [[How to Get Help]] for the full support system (forum, email, Discord, Helper role).
+See [[How to Get Technical Support]] for the full support system (forum, email, Discord, Helper role).
 
 Quick version:
 
@@ -617,4 +617,4 @@ Use the forum **Feedback** category rather than Help, so support threads stay fo
 2. Search [Help](https://discuss.gamecodemastery.com/c/help/6) and [FAQ and Tutorials](https://discuss.gamecodemastery.com/c/faq-and-tutorials/7)  
 3. Open a new **Help** topic with the report template filled in  
 
-Need help: [[How to Get Help]] — **[discuss.gamecodemastery.com](https://discuss.gamecodemastery.com/)**
+Technical support: [[How to Get Technical Support]] — **[discuss.gamecodemastery.com](https://discuss.gamecodemastery.com/)**

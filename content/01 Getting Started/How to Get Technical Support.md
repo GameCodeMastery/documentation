@@ -1,10 +1,11 @@
 ---
-title: How to Get Help
-description: Where to get help with Game Code Mastery products — forum, email, and Discord — what to include, and how the Discord Helper role works.
+title: How to Get Technical Support
+description: Where to get technical support for Game Code Mastery products — forum, email, and Discord — what to include, and how the Discord Helper role works.
 aliases:
   - How to Get Support
+  - How to Get Help
 ---
-# How to Get Help
+# How to Get Technical Support
 
 The Game Code Mastery support system is designed to provide a robust support solution so more people get actual developer answers, not fewer. Questions are tracked in one place instead of getting buried, which makes it possible to manage support at a larger scale without leaving people waiting in a thread that never gets seen.
 
