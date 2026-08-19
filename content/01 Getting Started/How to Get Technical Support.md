@@ -1,6 +1,6 @@
 ---
 title: How to Get Technical Support
-description: Where to get technical support for Game Code Mastery products — forum, email, and Discord — what to include, and how the Discord Helper role works.
+description: Where to get technical support for Game Code Mastery products — official forum, GitHub, and email — plus Discord and the Helper role.
 aliases:
   - How to Get Support
   - How to Get Help
@@ -8,6 +8,8 @@ aliases:
 # How to Get Technical Support
 
 The Game Code Mastery support system is designed to provide a robust support solution so more people get actual developer answers, not fewer. Questions are tracked in one place instead of getting buried, which makes it possible to manage support at a larger scale without leaving people waiting in a thread that never gets seen.
+
+The **official recommended methods** are the forum, GitHub, and email. I check those more actively, and questions posted there get developer attention first. Discord is still supported, with slower response times.
 
 > [!TIP]
 > Read the docs and search first. A large share of questions are already answered in Setup guides, Usage guides, or the [[FAQ and Troubleshooting|AARPG FAQ]].
@@ -18,13 +20,12 @@ The Game Code Mastery support system is designed to provide a robust support sol
 
 | You want… | Go here |
 | --- | --- |
-| Fast developer response (forum) | **[Help](https://discuss.gamecodemastery.com/c/help/6)** on the [official forum](https://discuss.gamecodemastery.com) |
-| Fast developer response (email) | **support@gamecodemastery.com** |
-| Community help, quicker back-and-forth | [Game Code Mastery Discord](https://discord.gg/g2J8H2mPbj) |
+| Official — forum | **[Help](https://discuss.gamecodemastery.com/c/help/6)** on the [official forum](https://discuss.gamecodemastery.com) |
+| Official — GitHub | **[GameCodeMastery/support Issues](https://github.com/GameCodeMastery/support/issues)** |
+| Official — email | **support@gamecodemastery.com** |
+| Discord (slower developer response) | [Game Code Mastery Discord](https://discord.gg/g2J8H2mPbj) |
 | Known issues / update notes | Forum **[Announcements](https://discuss.gamecodemastery.com/c/announcements/5)** |
 | Feature requests and product suggestions | Forum **[Feedback](https://discuss.gamecodemastery.com/c/feedback/10)** |
-
-Do **not** open issues on the [support tracker](https://github.com/GameCodeMastery/support/issues) yourself. That tracker is the Helper intake queue — not a place to submit your question.
 
 ---
 
@@ -32,7 +33,7 @@ Do **not** open issues on the [support tracker](https://github.com/GameCodeMaste
 
 The official support forum is powered by Discourse: [https://discuss.gamecodemastery.com](https://discuss.gamecodemastery.com)
 
-This is where I'll be looking first. Questions posted in **Help** get developer attention first: [https://discuss.gamecodemastery.com/c/help/6](https://discuss.gamecodemastery.com/c/help/6)
+This is one of the official recommended methods. Questions posted in **Help** get developer attention first: [https://discuss.gamecodemastery.com/c/help/6](https://discuss.gamecodemastery.com/c/help/6)
 
 Use the right category:
 
@@ -50,23 +51,33 @@ New here? Start with **New users start here** in [FAQ and Tutorials](https://dis
 
 ---
 
+## GitHub
+
+GitHub is an official recommended method: [https://github.com/GameCodeMastery/support/issues](https://github.com/GameCodeMastery/support/issues)
+
+Open a new issue with the same details you would put in a forum post. Search existing issues first in case someone already asked.
+
+This tracker is also where Discord Helpers file questions that need a developer response, so Discord questions and GitHub questions land in the same place.
+
+---
+
 ## Email
 
-Email is also checked and maintained often, so it's another way to get fast developer support.
+Email is an official recommended method, and it's checked and maintained often.
 
-support@gamecodemastery.com
+**support@gamecodemastery.com**
 
-Include the same details you would put in a forum post: product, engine version, whether it happens in the demo or your project, repro steps, expected vs actual behavior, and relevant log text.
+Include the same details you would put in a forum post or GitHub issue: product, engine version, whether it happens in the demo or your project, repro steps, expected vs actual behavior, and relevant log text.
 
-The forum is still the better place when you want the answer to be public and searchable for the rest of the community. Use email when you prefer a private conversation, or just prefer writing it that way.
+The forum and GitHub are the better places when you want the answer to be public and searchable. Use email when you prefer a private conversation, or just prefer writing it that way.
 
 ---
 
 ## Discord
 
-While the forum is preferred, Discord is still a valid place to ask. The community can jump in, and I will still answer Discord questions.
+Discord is still supported. The community can jump in, and I will still answer Discord questions — with slower response times than the official methods.
 
-Helpers watch Discord for questions that need a developer response and file them on the support tracker so they don't get lost. That is why Discord answers from me may be fewer and slower than the forum, not because Discord is ignored.
+Helpers watch Discord for questions that need a developer response and file them on GitHub so they don't get lost.
 
 Invite: [https://discord.gg/g2J8H2mPbj](https://discord.gg/g2J8H2mPbj)
 
@@ -74,7 +85,7 @@ Invite: [https://discord.gg/g2J8H2mPbj](https://discord.gg/g2J8H2mPbj)
 
 ## Before you ask
 
-1. **Search.** Check this documentation, the [[FAQ and Troubleshooting|AARPG FAQ]], and existing forum Help topics.
+1. **Search.** Check this documentation, the [[FAQ and Troubleshooting|AARPG FAQ]], existing forum Help topics, and existing [GitHub support issues](https://github.com/GameCodeMastery/support/issues).
 2. **Read the relevant Setup / Usage guide** for the system you're using.
 3. **Reproduce in the included demo** when the question is about a purchased product. If it fails in the demo too, say so. If it only fails in your project, that's usually setup or integration.
 4. **One problem per topic** when you can.
@@ -108,7 +119,7 @@ For Advanced ARPG Combat, also see [[FAQ and Troubleshooting]] — it has the fu
 
 Helpers are **not** expected to answer questions. That's not the role.
 
-The role is Discord-only. The forum doesn't need it — I work that queue myself.
+The role is Discord-only. The forum, GitHub, and email don't need it — I work those queues myself.
 
 ### What Helpers do
 
@@ -116,7 +127,7 @@ The role is Discord-only. The forum doesn't need it — I work that queue myself
 2. Open an issue on the Game Code Mastery support tracker: [https://github.com/GameCodeMastery/support/issues](https://github.com/GameCodeMastery/support/issues)
 3. Paste the **full question** + a **direct link** to the Discord post
 
-That's it. No answering, no interacting with the user, no technical support on my behalf. This gives us a centralized place to actively track and more easily manage support questions.
+That's it. No answering, no interacting with the user, no technical support on my behalf. This will allow us to have a centralized place to actively track and more easily manage support questions.
 
 When filing an issue, use this shape:
 

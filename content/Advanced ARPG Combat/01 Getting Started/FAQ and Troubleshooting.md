@@ -16,12 +16,12 @@ title: FAQ & Troubleshooting
 
 ### Where to get support
 
-See [[How to Get Technical Support]] for the full support system (forum, email, Discord, Helper role).
+See [[How to Get Technical Support]] for the full support system (official forum, GitHub, email, Discord, Helper role).
 
 Quick version:
 
-- **Fast developer response** → post in [Help](https://discuss.gamecodemastery.com/c/help/6) on the official forum, or email **support@gamecodemastery.com**
-- **Discord** → still ask; the community can jump in, and Helpers flag questions that need a developer response
+- **Official recommended methods** (developer attention first) → [Help](https://discuss.gamecodemastery.com/c/help/6) on the official forum, [GitHub support issues](https://github.com/GameCodeMastery/support/issues), or email **support@gamecodemastery.com**
+- **Discord** → still supported, with slower response times; the community can jump in, and Helpers flag questions that need a developer response
 - **AARPG troubleshooting** → this page and [[Combat System Setup]] first
 
 ### Before you post
@@ -607,14 +607,14 @@ Use the forum **Feedback** category rather than Help, so support threads stay fo
 5. **Destroy what you spawn** — stateless gameplay cues and finished ability tasks are manual cleanup.
 6. **Deactivate traces** — leaving collision traces active is a common performance footgun.
 7. **Keep a clean repro project** — a minimal migrated project makes forum support much faster than a 50-plugin monolith.
-8. **Search before posting** — this page, system guides, and the forum Help/FAQ categories.
+8. **Search before posting** — this page, system guides, the forum Help/FAQ categories, and [GitHub support issues](https://github.com/GameCodeMastery/support/issues).
 
 ---
 
 ## Still stuck?
 
 1. Re-run the [[#How to Gather Diagnostics]] checklist  
-2. Search [Help](https://discuss.gamecodemastery.com/c/help/6) and [FAQ and Tutorials](https://discuss.gamecodemastery.com/c/faq-and-tutorials/7)  
-3. Open a new **Help** topic with the report template filled in  
+2. Search [Help](https://discuss.gamecodemastery.com/c/help/6), [FAQ and Tutorials](https://discuss.gamecodemastery.com/c/faq-and-tutorials/7), and [GitHub support issues](https://github.com/GameCodeMastery/support/issues)  
+3. Open a new **Help** topic, a [GitHub support issue](https://github.com/GameCodeMastery/support/issues), or email **support@gamecodemastery.com** with the report template filled in  
 
-Technical support: [[How to Get Technical Support]] — **[discuss.gamecodemastery.com](https://discuss.gamecodemastery.com/)**
+Technical support: [[How to Get Technical Support]]
