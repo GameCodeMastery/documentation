@@ -26,6 +26,9 @@ The **official recommended methods** are the forum, GitHub, and email. If you wa
 | Known issues / update notes | Forum **[Announcements](https://discuss.gamecodemastery.com/c/announcements/5)** |
 | Feature requests and product suggestions | Forum **[Feedback](https://discuss.gamecodemastery.com/c/feedback/10)** |
 
+> [!WARNING]
+> Discord is not officially supported. If you want technical support or an answer from the developer, use the forum, GitHub, or email.
+
 ---
 
 ## Official support forum
@@ -76,9 +79,6 @@ The forum and GitHub are the better places when you want the answer to be public
 2. **Read the relevant Setup / Usage guide** for the system you're using.
 3. **Reproduce in the included demo** when the question is about a purchased product. If it fails in the demo too, say so. If it only fails in your project, that's usually setup or integration.
 4. **One problem per topic** when you can.
-
-> [!WARNING]
-> Discord is not officially supported. If you want technical support or an answer from the developer, use the forum, GitHub, or email.
 
 ---
 
