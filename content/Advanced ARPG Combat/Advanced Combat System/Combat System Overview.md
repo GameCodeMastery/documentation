@@ -13,7 +13,8 @@ To see what the product is capable of using high quality animations (animations 
 
 To see the system with the included animations try this [Demo](https://www.mediafire.com/file/g4qqh53d4b0398t/AARPG_With_Included_Animations.zip/file) or watch this [Video](https://youtu.be/catMRNgtJfE)
 
-Support: [Discord](https://discord.gg/6NcaJuj)
+Support: [[How to Get Technical Support]] (forum, GitHub, or email — Discord is community-only)
+Community Discord: [Game Code Mastery Discord](https://discord.gg/g2J8H2mPbj)
 Video Tutorials: [Video Tutorials](https://youtube.com/playlist?list=PLrlmX34siH5_QaT-6XzS54hWW_beKTah7)
 
 ## Features:

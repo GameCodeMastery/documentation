@@ -16,12 +16,12 @@ title: FAQ & Troubleshooting
 
 ### Where to get support
 
-See [[How to Get Technical Support]] for the full support system (official forum, GitHub, email, Discord, Helper role).
+See [[How to Get Technical Support]] for the full support system (official forum, GitHub, email). Discord is community-only.
 
 Quick version:
 
-- **Official recommended methods** (developer attention first) → [Help](https://discuss.gamecodemastery.com/c/help/6) on the official forum, [GitHub support issues](https://github.com/GameCodeMastery/support/issues), or email **support@gamecodemastery.com**
-- **Discord** → still supported, with slower response times; the community can jump in, and Helpers flag questions that need a developer response
+- **Technical support** → [Help](https://discuss.gamecodemastery.com/c/help/6) on the official forum, [GitHub support issues](https://github.com/GameCodeMastery/support/issues), or email **support@gamecodemastery.com**
+- **Discord** → community discussion only, not technical support
 - **AARPG troubleshooting** → this page and [[Combat System Setup]] first
 
 ### Before you post
